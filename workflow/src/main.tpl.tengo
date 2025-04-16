@@ -1,0 +1,66 @@
+// "hello world"
+wf := import("@platforma-sdk/workflow-tengo:workflow")
+exec := import("@platforma-sdk/workflow-tengo:exec")
+assets:= import("@platforma-sdk/workflow-tengo:assets")
+xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
+ll := import("@platforma-sdk/workflow-tengo:ll")
+pframes := import("@platforma-sdk/workflow-tengo:pframes")
+
+vjUsage := import(":vj-usage")
+geneUsage := import(":x-usage")
+
+wf.prepare(func(args) {
+	bundleBuilder := wf.createPBundleBuilder()
+
+	bundleBuilder.addAnchor("main", args.vGeneRef) // PlRef
+	bundleBuilder.addById(args.jGeneRef) // SUniversalPColumnId
+	bundleBuilder.addById(args.abundanceRef) // SUniversalPColumnId
+
+	return  { 
+		columns: bundleBuilder.build()
+	}
+})
+
+wf.body(func(args) {
+	columns := args.columns
+
+	vGeneSpec := columns.getSpec(args.vGeneRef)
+	jGeneSpec := columns.getSpec(args.jGeneRef)
+	abundanceSpec := columns.getSpec(args.abundanceRef)
+
+	table := columns.xsvTableBuilder()
+
+	table.setAxisHeader("pl7.app/sampleId", "sample")
+	table.setAxisHeader(vGeneSpec.axesSpec[0].name, "clonotypeKey")
+	table.add(args.vGeneRef, {header: "vGene"})
+	table.add(args.jGeneRef, {header: "jGene"})
+	table.add(args.abundanceRef, {header: "abundance"})
+	tsv := table.build("tsv")
+
+	vjUsage := vjUsage.vjUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
+	vUsage := geneUsage.geneUsage("vGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
+	jUsage := geneUsage.geneUsage("jGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
+
+	pf := pframes.pFrameBuilder()
+	for id, v in vjUsage {
+		pf.add(id + "-vj", v.spec, v.data)
+	}
+	for id, v in vUsage {
+		pf.add(id + "-v", v.spec, v.data)
+	}
+	for id, v in jUsage {
+		pf.add(id + "-j", v.spec, v.data)
+	}
+	pf = pf.build()
+
+	return {
+		outputs: {
+			pf: pframes.exportFrame(pf)
+		},
+
+		exports: {
+			pf: pf
+		}
+	}
+})
+

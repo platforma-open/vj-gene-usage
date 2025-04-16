@@ -1,0 +1,66 @@
+
+exec := import("@platforma-sdk/workflow-tengo:exec")
+assets:= import("@platforma-sdk/workflow-tengo:assets")
+xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
+pframes := import("@platforma-sdk/workflow-tengo:pframes")
+ll := import("@platforma-sdk/workflow-tengo:ll")
+json := import("json")
+aggSw := assets.importSoftware("@platforma-open/milaboratories.software-ptransform:main")
+specs := import(":specs")
+
+geneUsage := func(gene, vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
+	pWorkflow := {
+		steps: [ {
+			type: "aggregate",
+			groupBy: ["sample", gene],
+			aggregations: [
+                {
+                    type: "sum",
+                    src: "abundance",
+                    dst: "sum"
+                },
+                {
+                    type: "count",
+                    src: "abundance",
+                    dst: "count"
+                }
+            ]
+		} ]
+	}
+
+	agg := exec.builder().
+		printErrStreamToStdout().
+		software(aggSw).
+		arg("--workflow").
+		arg("wf.json").
+		arg("input.tsv").
+		arg("output.tsv").
+		writeFile("wf.json", json.encode(pWorkflow)).
+		addFile("input.tsv", tsv).
+		saveFile("output.tsv").
+		run()
+
+
+	result := xsv.importFile(
+		agg.getFile("output.tsv"),
+		"tsv",
+		{
+			axes: [
+				specs.sampleAxisSpec(abundanceSpec),
+				specs.geneAxisSpec(gene, vGeneSpec)
+			],
+
+			columns: [
+				specs.geneUsageColumnSpec(gene, true, abundanceSpec),
+				specs.geneUsageColumnSpec(gene, false, abundanceSpec)
+			]
+		},
+		{ splitDataAndSpec: true }
+	)
+
+	return result
+}
+
+export {
+	geneUsage: geneUsage
+}

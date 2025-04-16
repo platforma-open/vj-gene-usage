@@ -1,0 +1,82 @@
+ll := import("@platforma-sdk/workflow-tengo:ll")
+
+
+sampleAxisSpec := func(abundanceSpec) {
+    return {
+        column: "sample",
+        spec: abundanceSpec.axesSpec[0]
+    }
+}
+
+geneAxisSpec := func(gene, geneSpec) {
+    return {
+        column: gene,
+        spec: {
+				name: "pl7.app/vdj/" + gene,
+				type: "String",
+				annotations: {
+					"pl7.app/label": geneSpec.annotations["pl7.app/label"]
+				},
+				domain: geneSpec.domain
+			}
+    }
+}
+
+vjUsageColumnSpec := func(weighted, abundanceSpec) {
+    name := undefined
+    type := undefined
+    if weighted {
+        name = "sum"
+        type = "weighted"
+    } else {
+        name = "count"
+        type = "unweighted"
+    }
+    return {
+        column: name,
+        spec: {
+            valueType: "Double",
+            name: "pl7.app/vdj/vjGeneUsage",
+            domain: {
+                "pl7.app/vdj/vjGeneUsage/type": type,
+                "pl7.app/abundance/unit": abundanceSpec.annotations["pl7.app/abundance/unit"]
+            },
+            annotations: {
+                "pl7.app/label": "V/J usage"
+            }
+        }
+    }
+}
+
+geneUsageColumnSpec := func(gene, weighted, abundanceSpec) {
+    name := undefined
+    type := undefined
+    if weighted {
+        name = "sum"
+        type = "weighted"
+    } else {
+        name = "count"
+        type = "unweighted"
+    }
+    return {
+        column: name,
+        spec: {
+            valueType: "Double",
+            name: "pl7.app/vdj/" + gene + "Usage",
+            domain: {
+                "pl7.app/vdj/vjGeneUsage/type": type,
+                "pl7.app/abundance/unit": abundanceSpec.annotations["pl7.app/abundance/unit"]
+            },
+            annotations: {
+                "pl7.app/label": gene + " usage"
+            }
+        }
+    }
+}
+
+export {
+    sampleAxisSpec: sampleAxisSpec,
+    geneAxisSpec: geneAxisSpec,
+    vjUsageColumnSpec: vjUsageColumnSpec,
+    geneUsageColumnSpec: geneUsageColumnSpec
+}
