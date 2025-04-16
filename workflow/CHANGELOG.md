@@ -1,5 +1,13 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.0.1
+
+### Patch Changes
+
+- db48e22: Init
+- Updated dependencies [db48e22]
+  - @platforma-open/milaboratories.vj-usage.software@2.0.1
+
 ## 2.0.0
 
 ### Major Changes

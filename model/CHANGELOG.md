@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.0.1
+
+### Patch Changes
+
+- db48e22: Init
+
 ## 2.0.0
 
 ### Major Changes
