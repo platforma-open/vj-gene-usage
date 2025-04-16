@@ -24,7 +24,7 @@
       "ui": "@platforma-open/milaboratories.vj-usage.ui/dist"
     },
     "meta": {
-      "title": "V/J Gene Usage -2 ",
+      "title": "V/J Gene Usage",
       "logo": "file:../logos/block-logo.png",
       "url": "https://github.com/milaboratory/platforma-cdr3-spectratype",
       "docs": "https://github.com/milaboratory/platforma-cdr3-spectratype/docs",
@@ -40,7 +40,8 @@
         "name": "MiLaboratories Inc",
         "url": "https://milaboratories.com/",
         "logo": "file:../logos/organization-logo.png"
-      }
+      },
+      "marketplaceRanking": 16300
     }
   },
   "devDependencies": {
