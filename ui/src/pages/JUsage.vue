@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import type { GraphMakerProps } from '@milaboratories/graph-maker';
+import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
 import '@milaboratories/graph-maker/styles';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
-import { computed, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useApp } from '../app';
 
 const app = useApp();
 
-const defaultOptions = computed((): GraphMakerProps['defaultOptions'] => {
+function createDefaultOptions(weightedFlag:boolean):PredefinedGraphOption<'heatmap'>[] {
   const mainCol: PDataColumnSpec = {
     kind: 'PColumn',
     valueType: 'Double',
     name: 'pl7.app/vdj/jGeneUsage',
     domain: {
-      'pl7.app/vdj/vjGeneUsage/type': app.model.ui.weightedFlag ? 'weighted' : 'unweighted',
+      'pl7.app/vdj/vjGeneUsage/type': weightedFlag ? 'weighted' : 'unweighted',
     },
     axesSpec: [],
   };
@@ -39,7 +39,8 @@ const defaultOptions = computed((): GraphMakerProps['defaultOptions'] => {
       },
     },
   ];
-});
+}
+const defaultOptions = ref(createDefaultOptions(app.model.ui.weightedFlag));
 
 const weightOptions = [
   {
@@ -54,10 +55,16 @@ const weightOptions = [
 
 const graphMakerRef = useTemplateRef('graphMaker');
 
-const setWeightedFlag = (flag: boolean) => {
-  app.model.ui.weightedFlag = flag;
-  graphMakerRef.value?.reset();
-};
+const weightedFlag = computed({
+  get: () => {
+    return app.model.ui.weightedFlag;
+  },
+  set: (flag:boolean) => {
+    app.model.ui.weightedFlag = flag;
+    defaultOptions.value = createDefaultOptions(flag);
+    graphMakerRef.value?.reset();
+  }
+});
 </script>
 
 <template>
@@ -70,7 +77,7 @@ const setWeightedFlag = (flag: boolean) => {
     :readonly-inputs="['value']"
   >
     <template #titleLineSlot>
-      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" @v-model:set="setWeightedFlag"/>
+      <PlBtnGroup v-model="weightedFlag" :options="weightOptions" />
     </template>
   </GraphMaker>
 </template>
