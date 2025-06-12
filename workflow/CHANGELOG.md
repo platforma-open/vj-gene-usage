@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.0.2
+
+### Patch Changes
+
+- 85529c8: chore: update deps
+
 ## 2.0.1
 
 ### Patch Changes
