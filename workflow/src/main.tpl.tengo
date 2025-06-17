@@ -28,14 +28,14 @@ wf.body(func(args) {
 	jGeneSpec := columns.getSpec(args.jGeneRef)
 	abundanceSpec := columns.getSpec(args.abundanceRef)
 
-	table := columns.xsvTableBuilder()
+	table := pframes.tsvFileBuilder()
 
 	table.setAxisHeader("pl7.app/sampleId", "sample")
 	table.setAxisHeader(vGeneSpec.axesSpec[0].name, "clonotypeKey")
-	table.add(args.vGeneRef, {header: "vGene"})
-	table.add(args.jGeneRef, {header: "jGene"})
-	table.add(args.abundanceRef, {header: "abundance"})
-	tsv := table.build("tsv")
+	table.add(columns.getColumn(args.vGeneRef), {header: "vGene"})
+	table.add(columns.getColumn(args.jGeneRef), {header: "jGene"})
+	table.add(columns.getColumn(args.abundanceRef), {header: "abundance"})
+	tsv := table.build()
 
 	vjUsage := vjUsage.vjUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
 	vUsage := geneUsage.geneUsage("vGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
