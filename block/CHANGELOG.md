@@ -1,5 +1,12 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.0.6
+
+### Patch Changes
+
+- Updated dependencies [c674b70]
+  - @platforma-open/milaboratories.vj-usage.workflow@2.1.0
+
 ## 2.0.5
 
 ### Patch Changes

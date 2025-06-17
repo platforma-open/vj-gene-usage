@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.1.0
+
+### Minor Changes
+
+- c674b70: Fix: Migrate xsvTableBuilder
+
 ## 2.0.2
 
 ### Patch Changes
