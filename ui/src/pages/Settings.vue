@@ -56,6 +56,13 @@ const scChainOptions = computed(() => {
   }
 });
 
+const alleleOptions = computed(() => {
+  return [
+    { label: 'Allele', value: true },
+    { label: 'Gene', value: false },
+  ];
+});
+
 </script>
 
 <template>
@@ -67,6 +74,17 @@ const scChainOptions = computed(() => {
     required
     @update:model-value="setInput"
   />
+
+  <PlBtnGroup
+    v-model="app.model.args.allele"
+    label="Group by"
+    :options="alleleOptions"
+  >
+    <template #tooltip>
+      Defines whether to group data by genes or by allelic variants.
+    </template>
+  </PlBtnGroup>
+
   <PlBtnGroup
     v-if="isSingleCell"
     v-model="app.model.args.scChain"

@@ -5,6 +5,7 @@ import { BlockModel, createPFrameForGraphs } from '@platforma-sdk/model';
 export type BlockArgs = {
   datasetRef?: PlRef;
   scChain?: string;
+  allele?: boolean;
 };
 
 export type UiState = {
@@ -19,6 +20,7 @@ export const model = BlockModel.create()
 
   .withArgs<BlockArgs>({
     scChain: 'A',
+    allele: false,
   })
 
   .withUiState<UiState>({

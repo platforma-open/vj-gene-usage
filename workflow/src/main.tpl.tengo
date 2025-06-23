@@ -47,7 +47,7 @@ wf.prepare(func(args) {
 		// and then pick ones we need when resolved
 		bundleBuilder.addMulti({
 			axes: [{ anchor: "main", idx: 1 }],
-			name: "pl7.app/vdj/geneHit",
+			name: args.allele ? "pl7.app/vdj/geneHitWithAllele" : "pl7.app/vdj/geneHit",
 			domain: domain
 		},
 		geneLower + "Gene")
