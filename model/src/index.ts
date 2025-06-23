@@ -1,11 +1,9 @@
 import type { GraphMakerState } from '@milaboratories/graph-maker';
-import type { InferOutputsType, PlRef, SUniversalPColumnId } from '@platforma-sdk/model';
-import { BlockModel, createPFrameForGraphs, isPColumnSpec } from '@platforma-sdk/model';
+import type { InferOutputsType, PlRef } from '@platforma-sdk/model';
+import { BlockModel, createPFrameForGraphs } from '@platforma-sdk/model';
 
 export type BlockArgs = {
-  vGeneRef?: PlRef;
-  jGeneRef?: SUniversalPColumnId;
-  abundanceRef?: SUniversalPColumnId;
+  datasetRef?: PlRef;
 };
 
 export type UiState = {
@@ -40,50 +38,27 @@ export const model = BlockModel.create()
     },
   })
 
-  .argsValid((ctx) =>
-    ctx.args.vGeneRef !== undefined
-    && ctx.args.jGeneRef !== undefined
-    && ctx.args.abundanceRef !== undefined,
+  .argsValid((ctx) => ctx.args.datasetRef !== undefined)
+
+  .output('datasetOptions', (ctx) =>
+    ctx.resultPool.getOptions([{
+      axes: [
+        { name: 'pl7.app/sampleId' },
+        { name: 'pl7.app/vdj/clonotypeKey' },
+      ],
+      annotations: { 'pl7.app/isAnchor': 'true' },
+    }, {
+      axes: [
+        { name: 'pl7.app/sampleId' },
+        { name: 'pl7.app/vdj/scClonotypeKey' },
+      ],
+      annotations: { 'pl7.app/isAnchor': 'true' },
+    }],
+    {
+      // suppress native label of the column (e.g. "Number of Reads") to show only the dataset label
+      label: { includeNativeLabel: false },
+    }),
   )
-
-  .output('vGeneOptions', (ctx) =>
-    ctx.resultPool.getOptions((c) =>
-      isPColumnSpec(c) && c.valueType === 'String'
-      && (c.name === 'pl7.app/vdj/geneHit' || c.name === 'pl7.app/vdj/geneHitWithAllele')
-      && c.domain?.['pl7.app/vdj/reference'] === 'VGene',
-    ))
-
-  .output('jGeneOptions', (ctx) => {
-    const inputRef = ctx.args.vGeneRef;
-    if (inputRef === undefined) return undefined;
-    const vGeneSpec = ctx.resultPool.getPColumnSpecByRef(inputRef);
-    if (vGeneSpec === undefined) return undefined;
-    return ctx.resultPool.getCanonicalOptions({ main: inputRef }, [
-      {
-        axes: [{ anchor: 'main', idx: 0 }],
-        name: vGeneSpec.name,
-        domain: {
-          'pl7.app/vdj/reference': 'JGene',
-          'pl7.app/vdj/scClonotypeChain': { anchor: 'main' },
-          'pl7.app/vdj/scClonotypeChain/index': { anchor: 'main' },
-        },
-      },
-    ], { ignoreMissingDomains: true });
-  })
-
-  .output('abundanceOptions', (ctx) => {
-    const inputRef = ctx.args.vGeneRef;
-    if (inputRef === undefined) return undefined;
-    return ctx.resultPool.getCanonicalOptions({ main: inputRef },
-      {
-        axes: [{/* sampleId */}, { anchor: 'main', idx: 0 }],
-        annotations: {
-          'pl7.app/isAbundance': 'true',
-          'pl7.app/abundance/normalized': 'false',
-        },
-      },
-    );
-  })
 
   .output('pf', (ctx) => {
     const pCols = ctx.outputs?.resolve('pf')?.getPColumns();

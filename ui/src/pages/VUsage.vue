@@ -2,12 +2,23 @@
 import type { GraphMakerProps } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
 import '@milaboratories/graph-maker/styles';
-import type { PDataColumnSpec } from '@platforma-sdk/model';
-import { PlBtnGroup, PlDropdown, PlDropdownRef } from '@platforma-sdk/ui-vue';
+import type { PDataColumnSpec, PlRef } from '@platforma-sdk/model';
+import { plRefsEqual } from '@platforma-sdk/model';
+import { PlBtnGroup, PlDropdownRef } from '@platforma-sdk/ui-vue';
 import { computed, useTemplateRef } from 'vue';
 import { useApp } from '../app';
 
 const app = useApp();
+
+// Set name of the block based on the dataset
+function setInput(inputRef?: PlRef) {
+  app.model.args.datasetRef = inputRef;
+  if (inputRef) {
+    const datasetLabel = app.model.outputs.datasetOptions?.find((o) => plRefsEqual(o.ref, inputRef))?.label;
+    if (datasetLabel)
+      app.model.ui.blockTitle = 'V/J Usage - ' + datasetLabel;
+  }
+}
 
 const defaultOptions = computed((): GraphMakerProps['defaultOptions'] => {
   const mainCol: PDataColumnSpec = {
@@ -74,24 +85,12 @@ const setWeightedFlag = (flag: boolean) => {
     </template>
     <template #settingsSlot>
       <PlDropdownRef
-        v-model="app.model.args.vGeneRef"
-        :options="app.model.outputs.vGeneOptions"
-        label="V gene"
+        v-model="app.model.args.datasetRef"
+        :options="app.model.outputs.datasetOptions"
+        label="Select dataset"
+        clearable
         required
-      />
-
-      <PlDropdown
-        v-model="app.model.args.jGeneRef"
-        :options="app.model.outputs.jGeneOptions"
-        label="J gene"
-        required
-      />
-
-      <PlDropdown
-        v-model="app.model.args.abundanceRef"
-        :options="app.model.outputs.abundanceOptions"
-        label="Abundance (weight)"
-        required
+        @update:model-value="setInput"
       />
     </template>
   </GraphMaker>
