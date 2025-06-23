@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.2.0
+
+### Minor Changes
+
+- 8d95c4b: Refactor to use anchored queries
+
 ## 2.1.0
 
 ### Minor Changes

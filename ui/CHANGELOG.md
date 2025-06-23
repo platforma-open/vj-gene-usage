@@ -1,5 +1,16 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.0
+
+### Minor Changes
+
+- 8d95c4b: Refactor to use anchored queries
+
+### Patch Changes
+
+- Updated dependencies [8d95c4b]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.0
+
 ## 2.0.1
 
 ### Patch Changes
