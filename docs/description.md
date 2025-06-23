@@ -1,3 +1,3 @@
-# Description
+# Overview
 
-This block calculates V and J gene usage for your immune repertoire data. It includes a downsampling feature to normalize your data before analysis. The block takes the output of any clonotyping block (e.g., MiXCR Clonotyping) as input.
+This block analyzes V and J gene usage within your immune repertoire data, a key method for characterizing B-cell receptor (BCR) and T-cell receptor (TCR) repertoires. It processes clonotype data from upstream tools (e.g., MiXCR Clonotyping) to calculate the frequency of V and J gene segment utilization. The analysis helps reveal biases in gene usage that can be associated with antigen exposure, vaccination, or disease states. The results are presented through interactive visualizations, including a heatmap for V-J gene combinations and bar plots for individual V and J gene frequencies.

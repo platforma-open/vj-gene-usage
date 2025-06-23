@@ -4,7 +4,7 @@ import { GraphMaker } from '@milaboratories/graph-maker';
 import '@milaboratories/graph-maker/styles';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
-import { computed, useTemplateRef } from 'vue';
+import { computed } from 'vue';
 import { useApp } from '../app';
 
 const app = useApp();
@@ -59,18 +59,22 @@ const weightOptions = [
   },
 ];
 
-const graphMakerRef = useTemplateRef('graphMaker');
+const statKey = computed(() => {
+  return {
+    pf: app.model.outputs.pf,
+    weightedFlag: app.model.ui.weightedFlag,
+  };
+});
 
 const setWeightedFlag = (flag: boolean) => {
   app.model.ui.weightedFlag = flag;
-  graphMakerRef.value?.reset();
 };
 </script>
 
 <template>
   <GraphMaker
-    ref="graphMaker"
     v-model="app.model.ui.vjUsagePlotState"
+    :data-state-key="statKey"
     chart-type="heatmap"
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"

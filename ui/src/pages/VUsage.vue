@@ -2,23 +2,13 @@
 import type { GraphMakerProps } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
 import '@milaboratories/graph-maker/styles';
-import type { PDataColumnSpec, PlRef } from '@platforma-sdk/model';
-import { plRefsEqual } from '@platforma-sdk/model';
-import { PlBtnGroup, PlDropdownRef } from '@platforma-sdk/ui-vue';
-import { computed, useTemplateRef } from 'vue';
+import type { PDataColumnSpec } from '@platforma-sdk/model';
+import { PlBtnGroup } from '@platforma-sdk/ui-vue';
+import { computed } from 'vue';
 import { useApp } from '../app';
+import Settings from './Settings.vue';
 
 const app = useApp();
-
-// Set name of the block based on the dataset
-function setInput(inputRef?: PlRef) {
-  app.model.args.datasetRef = inputRef;
-  if (inputRef) {
-    const datasetLabel = app.model.outputs.datasetOptions?.find((o) => plRefsEqual(o.ref, inputRef))?.label;
-    if (datasetLabel)
-      app.model.ui.blockTitle = 'V/J Usage - ' + datasetLabel;
-  }
-}
 
 const defaultOptions = computed((): GraphMakerProps['defaultOptions'] => {
   const mainCol: PDataColumnSpec = {
@@ -63,11 +53,15 @@ const weightOptions = [
   },
 ];
 
-const graphMakerRef = useTemplateRef('graphMaker');
+const statKey = computed(() => {
+  return {
+    pf: app.model.outputs.pf,
+    weightedFlag: app.model.ui.weightedFlag,
+  };
+});
 
 const setWeightedFlag = (flag: boolean) => {
   app.model.ui.weightedFlag = flag;
-  graphMakerRef.value?.reset();
 };
 </script>
 
@@ -75,6 +69,7 @@ const setWeightedFlag = (flag: boolean) => {
   <GraphMaker
     ref="graphMaker"
     v-model="app.model.ui.vUsagePlotState"
+    :data-state-key="statKey"
     chart-type="heatmap"
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"
@@ -84,14 +79,7 @@ const setWeightedFlag = (flag: boolean) => {
       <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" @v-model:set="setWeightedFlag"/>
     </template>
     <template #settingsSlot>
-      <PlDropdownRef
-        v-model="app.model.args.datasetRef"
-        :options="app.model.outputs.datasetOptions"
-        label="Select dataset"
-        clearable
-        required
-        @update:model-value="setInput"
-      />
+      <Settings/>
     </template>
   </GraphMaker>
 </template>

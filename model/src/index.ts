@@ -4,6 +4,7 @@ import { BlockModel, createPFrameForGraphs } from '@platforma-sdk/model';
 
 export type BlockArgs = {
   datasetRef?: PlRef;
+  scChain?: string;
 };
 
 export type UiState = {
@@ -16,25 +17,42 @@ export type UiState = {
 
 export const model = BlockModel.create()
 
-  .withArgs<BlockArgs>({})
+  .withArgs<BlockArgs>({
+    scChain: 'A',
+  })
 
   .withUiState<UiState>({
     blockTitle: 'V/J Usage',
     weightedFlag: true,
     vUsagePlotState: {
       title: 'V Usage',
-      template: 'heatmap',
+      template: 'heatmapClustered',
       currentTab: 'settings',
+      layersSettings: {
+        heatmapClustered: {
+          normalizationDirection: null,
+        },
+      },
     },
     jUsagePlotState: {
       title: 'V Usage',
-      template: 'heatmap',
+      template: 'heatmapClustered',
       currentTab: null,
+      layersSettings: {
+        heatmapClustered: {
+          normalizationDirection: null,
+        },
+      },
     },
     vjUsagePlotState: {
       title: 'V/J Usage',
-      template: 'heatmap',
+      template: 'heatmapClustered',
       currentTab: null,
+      layersSettings: {
+        heatmapClustered: {
+          normalizationDirection: null,
+        },
+      },
     },
   })
 
@@ -59,6 +77,14 @@ export const model = BlockModel.create()
       label: { includeNativeLabel: false },
     }),
   )
+
+  .output('datasetSpec', (ctx) => {
+    if (ctx.args.datasetRef === undefined) {
+      return undefined;
+    }
+
+    return ctx.resultPool.getPColumnSpecByRef(ctx.args.datasetRef);
+  })
 
   .output('pf', (ctx) => {
     const pCols = ctx.outputs?.resolve('pf')?.getPColumns();
