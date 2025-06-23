@@ -6,35 +6,94 @@ xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
 ll := import("@platforma-sdk/workflow-tengo:ll")
 pframes := import("@platforma-sdk/workflow-tengo:pframes")
 
+filter := func(arr, predicate) {
+	filtered := []
+	for item in arr {
+		if predicate(item) {
+			filtered = append(filtered, item)
+		}
+	}
+	return filtered
+}
+
 vjUsage := import(":vj-usage")
 geneUsage := import(":x-usage")
 
 wf.prepare(func(args) {
 	bundleBuilder := wf.createPBundleBuilder()
+	bundleBuilder.ignoreMissingDomains() // to make query work for both bulk and single cell data
+	bundleBuilder.addAnchor("main", args.datasetRef)
 
-	bundleBuilder.addAnchor("main", args.vGeneRef) // PlRef
-	bundleBuilder.addById(args.jGeneRef) // SUniversalPColumnId
-	bundleBuilder.addById(args.abundanceRef) // SUniversalPColumnId
+	// abundance
+	bundleBuilder.addSingle({
+		axes: [{ anchor: "main", idx: 0 }, { anchor: "main", idx: 1 }],
+		annotations: {
+			"pl7.app/isAbundance": "true",
+			"pl7.app/abundance/normalized": "false",
+			"pl7.app/abundance/isPrimary": "true"
+		}
+	}, "abundance")
 
-	return  { 
+	// Add the V and J gene hit columns to the bundle.
+	for gene in ["V", "J"] {
+		geneLower := gene == "V" ? "v" : "j"
+		
+		// Base domain for gene hit
+		domain := {
+			"pl7.app/vdj/reference": gene + "Gene"
+		}
+		
+		// for single cell data, we will get multiple chains, so we need to add them all
+		// and then pick ones we need when resolved
+		bundleBuilder.addMulti({
+			axes: [{ anchor: "main", idx: 1 }],
+			name: args.allele ? "pl7.app/vdj/geneHitWithAllele" : "pl7.app/vdj/geneHit",
+			domain: domain
+		},
+		geneLower + "Gene")
+	}
+
+	return { 
 		columns: bundleBuilder.build()
 	}
 })
 
 wf.body(func(args) {
 	columns := args.columns
+	isSingleCell := args.columns.getSpec(args.datasetRef).axesSpec[1].name == "pl7.app/vdj/scClonotypeKey"
 
-	vGeneSpec := columns.getSpec(args.vGeneRef)
-	jGeneSpec := columns.getSpec(args.jGeneRef)
-	abundanceSpec := columns.getSpec(args.abundanceRef)
+	vGeneCol := undefined
+	jGeneCol := undefined
+	if isSingleCell {
+		predicate:= func(col) {
+			return col.spec.domain["pl7.app/vdj/scClonotypeChain"] == args.scChain && col.spec.domain["pl7.app/vdj/scClonotypeChain/index"] == "primary"
+		}
+		vGeneCols := filter(columns.getColumns("vGene"), predicate)
+		ll.assert(len(vGeneCols) == 1, "expected exactly 1 V gene column for chain, got %d", len(vGeneCols))
+		vGeneCol = vGeneCols[0]
+		
+		jGeneCols := filter(columns.getColumns("jGene"), predicate)
+		ll.assert(len(jGeneCols) == 1, "expected exactly 1 J gene column for chain, got %d", len(jGeneCols))
+		jGeneCol = jGeneCols[0]
+	} else {
+		ll.assert(len(columns.getColumns("vGene")) == 1, "expected exactly 1 V gene column, got ", len(columns.getColumns("vGene")))
+		ll.assert(len(columns.getColumns("jGene")) == 1, "expected exactly 1 J gene column, got ", len(columns.getColumns("jGene")))
+		vGeneCol = columns.getColumns("vGene")[0]
+		jGeneCol = columns.getColumns("jGene")[0]
+	}
+
+	
+	vGeneSpec := vGeneCol.spec
+	jGeneSpec := jGeneCol.spec
+	abundanceSpec := columns.getSpec("abundance")
 
 	table := pframes.tsvFileBuilder()
 
 	table.setAxisHeader("pl7.app/sampleId", "sample")
-	table.setAxisHeader(vGeneSpec.axesSpec[0].name, "clonotypeKey")
-	table.add(columns.getColumn(args.vGeneRef), {header: "vGene"})
-	table.add(columns.getColumn(args.jGeneRef), {header: "jGene"})
-	table.add(columns.getColumn(args.abundanceRef), {header: "abundance"})
+	table.setAxisHeader(abundanceSpec.axesSpec[1].name, "clonotypeKey")
+	table.add(vGeneCol, {header: "vGene"})
+	table.add(jGeneCol, {header: "jGene"})
+	table.add(columns.getColumn("abundance"), {header: "abundance"})
 	tsv := table.build()
 
 	vjUsage := vjUsage.vjUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)

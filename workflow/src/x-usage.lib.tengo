@@ -1,44 +1,23 @@
-
-exec := import("@platforma-sdk/workflow-tengo:exec")
-assets:= import("@platforma-sdk/workflow-tengo:assets")
+pt := import("@platforma-sdk/workflow-tengo:pt")
 xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
 pframes := import("@platforma-sdk/workflow-tengo:pframes")
 ll := import("@platforma-sdk/workflow-tengo:ll")
-json := import("json")
-aggSw := assets.importSoftware("@platforma-open/milaboratories.software-ptransform:main")
 specs := import(":specs")
 
 geneUsage := func(gene, vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
-	pWorkflow := {
-		steps: [ {
-			type: "aggregate",
-			groupBy: ["sample", gene],
-			aggregations: [
-                {
-                    type: "sum",
-                    src: "abundance",
-                    dst: "sum"
-                },
-                {
-                    type: "count",
-                    src: "abundance",
-                    dst: "count"
-                }
-            ]
-		} ]
-	}
+	wf := pt.workflow()
+	df := wf.frame(tsv, {xsvType: "tsv"})
 
-	agg := exec.builder().
-		printErrStreamToStdout().
-		software(aggSw).
-		arg("--workflow").
-		arg("wf.json").
-		arg("input.tsv").
-		arg("output.tsv").
-		writeFile("wf.json", json.encode(pWorkflow)).
-		addFile("input.tsv", tsv).
-		saveFile("output.tsv").
-		run()
+	aggDf := df.
+		groupBy("sample", gene).
+		agg(
+			pt.col("abundance").sum().alias("sum"),
+			pt.col("abundance").count().alias("count")
+		)
+
+	aggDf.save("output.tsv")
+
+	agg := wf.run()
 
 
 	result := xsv.importFile(
