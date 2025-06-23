@@ -12,9 +12,6 @@ catalogs:
     '@milaboratories/graph-maker':
       specifier: ^1.1.119
       version: 1.1.119
-    '@platforma-open/milaboratories.software-ptransform':
-      specifier: ^1.3.1
-      version: 1.3.1
     '@platforma-sdk/block-tools':
       specifier: ^2.5.57
       version: 2.5.57
@@ -171,9 +168,6 @@ importers:
 
   workflow:
     dependencies:
-      '@platforma-open/milaboratories.software-ptransform':
-        specifier: 'catalog:'
-        version: 1.3.1
       '@platforma-sdk/workflow-tengo':
         specifier: 'catalog:'
         version: 4.8.0
@@ -1159,9 +1153,6 @@ packages:
 
   '@platforma-open/milaboratories.software-ptabler@1.6.0':
     resolution: {integrity: sha512-pHOMYwDikYB2L8K7XoTHDNJ7lr+mGIXv88iov1UZkSdvdOTb+owD3xZ3u9uxDNwyzyiQ7a4E+MIAdx/eJEYL8g==}
-
-  '@platforma-open/milaboratories.software-ptransform@1.3.1':
-    resolution: {integrity: sha512-F/S/fm0PxKl2zpZXWdmjytZdbK33KE5L772xCcs0YLTb02ejpLje9Ls1OUWixgXt1R8ulKtHuiKTVuFkq/wPJw==}
 
   '@platforma-open/milaboratories.software-small-binaries.guided-command@1.0.4':
     resolution: {integrity: sha512-LD8XQDnR+L9oRD7JXE0VWGmv1/0cm+J71flrwBUWeIbuaenPC8Nsza8oy7JjLJ8AX+bm8XAyyJALuqBBqkL95Q==}
@@ -6575,8 +6566,6 @@ snapshots:
     optional: true
 
   '@platforma-open/milaboratories.software-ptabler@1.6.0': {}
-
-  '@platforma-open/milaboratories.software-ptransform@1.3.1': {}
 
   '@platforma-open/milaboratories.software-small-binaries.guided-command@1.0.4': {}
 
