@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.0
+
+### Minor Changes
+
+- 2e659c6: allow prepare venv on Windows
+
 ## 2.0.7
 
 ### Patch Changes
