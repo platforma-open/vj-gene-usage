@@ -5,6 +5,7 @@ assets:= import("@platforma-sdk/workflow-tengo:assets")
 xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
 ll := import("@platforma-sdk/workflow-tengo:ll")
 pframes := import("@platforma-sdk/workflow-tengo:pframes")
+pSpec := import("@platforma-sdk/workflow-tengo:pframes.spec")
 
 filter := func(arr, predicate) {
 	filtered := []
@@ -100,15 +101,24 @@ wf.body(func(args) {
 	vUsage := geneUsage.geneUsage("vGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
 	jUsage := geneUsage.geneUsage("jGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
 
+	// Make trace for provenance
+	datasetSpec := columns.getSpec(args.datasetRef)
+	trace := pSpec.makeTrace(datasetSpec,
+		{
+			type: "milaboratories.vj-gene-usage",
+			importance: 30,
+			label: "VJ Gene Usage"
+		})
+
 	pf := pframes.pFrameBuilder()
 	for id, v in vjUsage {
-		pf.add(id + "-vj", v.spec, v.data)
+		pf.add(id + "-vj", trace.inject(v.spec), v.data)
 	}
 	for id, v in vUsage {
-		pf.add(id + "-v", v.spec, v.data)
+		pf.add(id + "-v", trace.inject(v.spec), v.data)
 	}
 	for id, v in jUsage {
-		pf.add(id + "-j", v.spec, v.data)
+		pf.add(id + "-j", trace.inject(v.spec), v.data)
 	}
 	pf = pf.build()
 
