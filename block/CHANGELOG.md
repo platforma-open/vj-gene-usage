@@ -1,5 +1,13 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.1
+
+### Patch Changes
+
+- cddbb4a: Update SDK and add mem cpu requests
+- Updated dependencies [cddbb4a]
+  - @platforma-open/milaboratories.vj-usage.workflow@2.2.1
+
 ## 2.1.0
 
 ### Minor Changes
