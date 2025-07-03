@@ -16,8 +16,7 @@ filter := func(arr, predicate) {
 	return filtered
 }
 
-vjUsage := import(":vj-usage")
-geneUsage := import(":x-usage")
+usage := import(":usage")
 
 wf.prepare(func(args) {
 	bundleBuilder := wf.createPBundleBuilder()
@@ -88,6 +87,7 @@ wf.body(func(args) {
 	abundanceSpec := columns.getSpec("abundance")
 
 	table := pframes.tsvFileBuilder()
+	table.mem("16GiB") // @TODO: set based on the size of the input
 
 	table.setAxisHeader("pl7.app/sampleId", "sample")
 	table.setAxisHeader(abundanceSpec.axesSpec[1].name, "clonotypeKey")
@@ -96,9 +96,10 @@ wf.body(func(args) {
 	table.add(columns.getColumn("abundance"), {header: "abundance"})
 	tsv := table.build()
 
-	vjUsage := vjUsage.vjUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
-	vUsage := geneUsage.geneUsage("vGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
-	jUsage := geneUsage.geneUsage("jGene", vGeneSpec, jGeneSpec, abundanceSpec, tsv)
+	results := usage.calculateUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
+	vjUsage := results.vjUsage
+	vUsage := results.vUsage
+	jUsage := results.jUsage
 
 	pf := pframes.pFrameBuilder()
 	for id, v in vjUsage {
