@@ -103,11 +103,11 @@ wf.body(func(args) {
 
 	// Make trace for provenance
 	datasetSpec := columns.getSpec(args.datasetRef)
-	trace := pSpec.makeTrace(datasetSpec,
+			trace := pSpec.makeTrace(datasetSpec,
 		{
 			type: "milaboratories.vj-gene-usage",
 			importance: 45,
-			label: "Gene Usage " + (args.allele ? " (allele)" : "(gene)")
+			label: "Gene Usage " + (args.allele ? "(allele)" : "(gene)")
 		})
 
 	pf := pframes.pFrameBuilder()
