@@ -42,7 +42,7 @@ vjUsageColumnSpec := func(weighted, abundanceSpec) {
                 "pl7.app/abundance/unit": abundanceSpec.annotations["pl7.app/abundance/unit"]
             },
             annotations: {
-                "pl7.app/label": "V/J usage"
+                "pl7.app/label": "V/J usage " + "(" + type + ")"
             }
         }
     }
@@ -68,7 +68,7 @@ geneUsageColumnSpec := func(gene, weighted, abundanceSpec) {
                 "pl7.app/abundance/unit": abundanceSpec.annotations["pl7.app/abundance/unit"]
             },
             annotations: {
-                "pl7.app/label": gene + " usage"
+                "pl7.app/label": gene + " usage " + "(" + type + ")"
             }
         }
     }
