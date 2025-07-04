@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.3.0
+
+### Minor Changes
+
+- ad82619: Add trace, improve column labels to clarify weighted/unweighted and group by allele or gene
+
 ## 2.2.1
 
 ### Patch Changes
