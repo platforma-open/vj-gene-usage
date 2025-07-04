@@ -107,7 +107,7 @@ wf.body(func(args) {
 		{
 			type: "milaboratories.vj-gene-usage",
 			importance: 30,
-			label: "VJ Gene Usage"
+			label: "Gene Usage " + (args.allele ? " (allele)" : "(gene)")
 		})
 
 	pf := pframes.pFrameBuilder()
