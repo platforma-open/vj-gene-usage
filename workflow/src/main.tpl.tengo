@@ -106,7 +106,7 @@ wf.body(func(args) {
 	trace := pSpec.makeTrace(datasetSpec,
 		{
 			type: "milaboratories.vj-gene-usage",
-			importance: 30,
+			importance: 45,
 			label: "Gene Usage " + (args.allele ? " (allele)" : "(gene)")
 		})
 
