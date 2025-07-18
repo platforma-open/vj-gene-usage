@@ -26,8 +26,8 @@
     "meta": {
       "title": "V/J Gene Usage",
       "logo": "file:../logos/block-logo.png",
-      "url": "https://github.com/milaboratory/platforma-cdr3-spectratype",
-      "docs": "https://github.com/milaboratory/platforma-cdr3-spectratype/docs",
+      "url": "https://github.com/platforma-open/vj-gene-usage",
+      "docs": "https://github.com/platforma-open/vj-gene-usage/docs",
       "support": "mailto:support@milaboratories.com",
       "description": "Calculate TCR/BCR V and J gene usage.",
       "longDescription": "file:../docs/description.md",
