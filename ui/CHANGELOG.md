@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.1
+
+### Patch Changes
+
+- aecedce: update graph-maker
+
 ## 2.1.0
 
 ### Minor Changes
