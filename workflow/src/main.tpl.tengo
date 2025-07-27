@@ -104,7 +104,7 @@ wf.body(func(args) {
 
 	// Make trace for provenance
 	datasetSpec := columns.getSpec(args.datasetRef)
-			trace := pSpec.makeTrace(datasetSpec,
+	trace := pSpec.makeTrace(datasetSpec,
 		{
 			type: "milaboratories.vj-gene-usage",
 			importance: 45,
