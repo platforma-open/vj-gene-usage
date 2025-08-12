@@ -1,5 +1,13 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.2
+
+### Patch Changes
+
+- 6d03a5c: Updated SDK.
+- Updated dependencies [6d03a5c]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.1
+
 ## 2.1.1
 
 ### Patch Changes

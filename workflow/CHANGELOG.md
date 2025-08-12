@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.3.1
+
+### Patch Changes
+
+- 6d03a5c: Updated SDK.
+
 ## 2.3.0
 
 ### Minor Changes
