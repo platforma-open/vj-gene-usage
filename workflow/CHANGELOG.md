@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.4.0
+
+### Minor Changes
+
+- 9932fd6: Use fraction abundance for usage calculation
+
 ## 2.3.1
 
 ### Patch Changes
