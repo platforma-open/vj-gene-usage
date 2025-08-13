@@ -10,12 +10,25 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 			 cpu(4)
 	df := wf.frame(tsv, {xsvType: "tsv"})
 
+	// Sample total aggregation
+	sampleTotalsDf := df.
+		groupBy("sample").
+		agg(
+			pt.col("abundance").sum().alias("totalSum"),
+			pt.col("abundance").count().alias("totalCount")
+		)
+
 	// VJ combined usage aggregation
 	vjAggDf := df.
 		groupBy("sample", "vGene", "jGene").
 		agg(
 			pt.col("abundance").sum().alias("sum"),
 			pt.col("abundance").count().alias("count")
+		).
+		join(sampleTotalsDf, {on: "sample", how: "left"}).
+		withColumns(
+			pt.col("sum").truediv(pt.col("totalSum")).alias("sum"),
+			pt.col("count").truediv(pt.col("totalCount")).alias("count")
 		)
 
 	// V gene usage aggregation
@@ -24,6 +37,11 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 		agg(
 			pt.col("abundance").sum().alias("sum"),
 			pt.col("abundance").count().alias("count")
+		).
+		join(sampleTotalsDf, {on: "sample", how: "left"}).
+		withColumns(
+			pt.col("sum").truediv(pt.col("totalSum")).alias("sum"),
+			pt.col("count").truediv(pt.col("totalCount")).alias("count")
 		)
 
 	// J gene usage aggregation
@@ -32,6 +50,11 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 		agg(
 			pt.col("abundance").sum().alias("sum"),
 			pt.col("abundance").count().alias("count")
+		).
+		join(sampleTotalsDf, {on: "sample", how: "left"}).
+		withColumns(
+			pt.col("sum").truediv(pt.col("totalSum")).alias("sum"),
+			pt.col("count").truediv(pt.col("totalCount")).alias("count")
 		)
 
 	// Save all outputs
