@@ -107,6 +107,6 @@ export const model = BlockModel.create()
     { type: 'link', href: '/vjUsage', label: 'V/J Gene Usage' },
   ])
 
-  .done();
+  .done(2);
 
 export type BlockOutputs = InferOutputsType<typeof model>;
