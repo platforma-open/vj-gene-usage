@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.1.2
+
+### Patch Changes
+
+- 8498650: Full SDK and python update
+
 ## 2.1.1
 
 ### Patch Changes
