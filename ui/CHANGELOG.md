@@ -1,5 +1,19 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.4
+
+### Patch Changes
+
+- 9a745e8: technical release
+- 83edfdf: technical release
+- 59cda2d: technical release
+- 3385764: technical release
+- Updated dependencies [9a745e8]
+- Updated dependencies [83edfdf]
+- Updated dependencies [59cda2d]
+- Updated dependencies [3385764]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.3
+
 ## 2.1.3
 
 ### Patch Changes
