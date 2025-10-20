@@ -79,7 +79,9 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 			columns: [
 				specs.vjUsageColumnSpec(true, abundanceSpec),
 				specs.vjUsageColumnSpec(false, abundanceSpec)
-			]
+			],
+			storageFormat: "Parquet",
+			partitionKeyLength: 0
 		},
 		{ splitDataAndSpec: true }
 	)
@@ -97,7 +99,9 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 			columns: [
 				specs.geneUsageColumnSpec("vGene", true, abundanceSpec),
 				specs.geneUsageColumnSpec("vGene", false, abundanceSpec)
-			]
+			],
+			storageFormat: "Parquet",
+			partitionKeyLength: 0
 		},
 		{ splitDataAndSpec: true }
 	)
@@ -115,7 +119,9 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 			columns: [
 				specs.geneUsageColumnSpec("jGene", true, abundanceSpec),
 				specs.geneUsageColumnSpec("jGene", false, abundanceSpec)
-			]
+			],
+			storageFormat: "Parquet",
+			partitionKeyLength: 0
 		},
 		{ splitDataAndSpec: true }
 	)
