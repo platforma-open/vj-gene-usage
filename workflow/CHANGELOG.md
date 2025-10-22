@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.4.2
+
+### Patch Changes
+
+- dca6a16: Support parquet format (update SDK)
+
 ## 2.4.1
 
 ### Patch Changes
