@@ -1,5 +1,12 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.9
+
+### Patch Changes
+
+- Updated dependencies [81799c7]
+  - @platforma-open/milaboratories.vj-usage.ui@2.1.5
+
 ## 2.1.8
 
 ### Patch Changes
