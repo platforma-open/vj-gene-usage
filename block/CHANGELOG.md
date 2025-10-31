@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.10
+
+### Patch Changes
+
+- e5cf752: Update SDK
+
 ## 2.1.9
 
 ### Patch Changes
