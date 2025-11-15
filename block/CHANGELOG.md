@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.11
+
+### Patch Changes
+
+- 75f706a: Block metadata updated
+
 ## 2.1.10
 
 ### Patch Changes
