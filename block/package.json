@@ -27,9 +27,9 @@
       "title": "V/J Gene Usage",
       "logo": "file:../logos/block-logo.png",
       "url": "https://github.com/platforma-open/vj-gene-usage",
-      "docs": "https://github.com/platforma-open/vj-gene-usage/docs",
+      "docs": "https://docs.platforma.bio/guides/vdj-analysis/gene-usage/",
       "support": "mailto:support@milaboratories.com",
-      "description": "Calculate TCR/BCR V and J gene usage.",
+      "description": "Analyzes V and J gene segment usage frequencies in T-cell and B-cell receptor repertoires to identify biases associated with antigen exposure or disease states.",
       "longDescription": "file:../docs/description.md",
       "changelog": "file:../CHANGELOG.md",
       "tags": [
