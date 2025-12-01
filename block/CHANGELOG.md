@@ -1,5 +1,15 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.1.12
+
+### Patch Changes
+
+- 81536ef: technical release
+- Updated dependencies [81536ef]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.4
+  - @platforma-open/milaboratories.vj-usage.ui@2.1.6
+  - @platforma-open/milaboratories.vj-usage.workflow@2.4.3
+
 ## 2.1.11
 
 ### Patch Changes

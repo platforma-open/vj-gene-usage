@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.test
 
+## 1.0.4
+
+### Patch Changes
+
+- 81536ef: technical release
+
 ## 1.0.3
 
 ### Patch Changes

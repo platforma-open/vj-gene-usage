@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.1.4
+
+### Patch Changes
+
+- 81536ef: technical release
+
 ## 2.1.3
 
 ### Patch Changes

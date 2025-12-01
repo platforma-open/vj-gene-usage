@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.4.3
+
+### Patch Changes
+
+- 81536ef: technical release
+
 ## 2.4.2
 
 ### Patch Changes
