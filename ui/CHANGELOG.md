@@ -1,5 +1,13 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.7
+
+### Patch Changes
+
+- f2f0821: Show running state for tables and graphs
+- Updated dependencies [f2f0821]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.5
+
 ## 2.1.6
 
 ### Patch Changes

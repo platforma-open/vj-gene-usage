@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.4.4
+
+### Patch Changes
+
+- f2f0821: Show running state for tables and graphs
+
 ## 2.4.3
 
 ### Patch Changes
