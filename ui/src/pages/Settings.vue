@@ -97,7 +97,7 @@ watchEffect(() => {
     v-model="app.model.args.customBlockLabel"
     label="Custom label"
     :clearable="true"
-    placeholder="Override block title"
+    :placeholder="app.model.args.defaultBlockLabel"
   />
 
   <PlBtnGroup
