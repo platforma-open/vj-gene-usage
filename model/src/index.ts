@@ -3,13 +3,14 @@ import type { InferOutputsType, PlRef } from '@platforma-sdk/model';
 import { BlockModel, createPFrameForGraphs } from '@platforma-sdk/model';
 
 export type BlockArgs = {
+  defaultBlockLabel: string;
+  customBlockLabel: string;
   datasetRef?: PlRef;
   scChain?: string;
   allele?: boolean;
 };
 
 export type UiState = {
-  blockTitle: string;
   weightedFlag: boolean;
   vUsagePlotState: GraphMakerState;
   jUsagePlotState: GraphMakerState;
@@ -19,12 +20,13 @@ export type UiState = {
 export const model = BlockModel.create()
 
   .withArgs<BlockArgs>({
+    defaultBlockLabel: '',
+    customBlockLabel: '',
     scChain: 'A',
     allele: false,
   })
 
   .withUiState<UiState>({
-    blockTitle: 'V/J Usage',
     weightedFlag: true,
     vUsagePlotState: {
       title: 'V Usage',
@@ -37,7 +39,7 @@ export const model = BlockModel.create()
       },
     },
     jUsagePlotState: {
-      title: 'V Usage',
+      title: 'J Usage',
       template: 'heatmapClustered',
       currentTab: null,
       layersSettings: {
@@ -99,7 +101,9 @@ export const model = BlockModel.create()
 
   .output('isRunning', (ctx) => ctx.outputs?.getIsReadyOrError() === false)
 
-  .title((ctx) => ctx.uiState?.blockTitle ?? 'V/J Usage')
+  .title(() => 'V/J Usage')
+
+  .subtitle((ctx) => ctx.args.customBlockLabel || ctx.args.defaultBlockLabel)
 
   .sections((_) => [
     { type: 'link', href: '/', label: 'V Gene Usage' },

@@ -104,11 +104,16 @@ wf.body(func(args) {
 
 	// Make trace for provenance
 	datasetSpec := columns.getSpec(args.datasetRef)
+	
+	// Use block label if provided, otherwise fall back to allele/gene indicator
+	blockLabel := args.customBlockLabel || args.defaultBlockLabel || ""
+	traceLabel := blockLabel != "" ? blockLabel : "Gene Usage " + (args.allele ? "(allele)" : "(gene)")
+	
 	trace := pSpec.makeTrace(datasetSpec,
 		{
 			type: "milaboratories.vj-gene-usage",
 			importance: 45,
-			label: "Gene Usage " + (args.allele ? "(allele)" : "(gene)")
+			label: traceLabel
 		})
 
 	pf := pframes.pFrameBuilder()
