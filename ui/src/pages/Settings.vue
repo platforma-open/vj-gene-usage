@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@milaboratories/graph-maker/styles';
 import type { PlRef } from '@platforma-sdk/model';
-import { PlBlockPage, PlBtnGroup, PlDropdownRef } from '@platforma-sdk/ui-vue';
+import { PlBtnGroup, PlDropdownRef, PlTextField } from '@platforma-sdk/ui-vue';
 import { computed, watchEffect } from 'vue';
 import { useApp } from '../app';
 
@@ -57,9 +57,18 @@ const alleleOptions = computed(() => {
   ];
 });
 
-// Build defaultBlockLabel from allele selection and chain (for single-cell)
+// Build defaultBlockLabel from dataset name, allele selection and chain (for single-cell)
 watchEffect(() => {
   const parts: string[] = [];
+  // Add dataset name
+  if (app.model.args.datasetRef) {
+    const selectedOption = app.model.outputs.datasetOptions?.find(
+      (option) => option.ref === app.model.args.datasetRef,
+    );
+    if (selectedOption?.label) {
+      parts.push(selectedOption.label);
+    }
+  }
   // Add allele/gene
   parts.push(app.model.args.allele ? 'Allele' : 'Gene');
   // Add chain info for single-cell datasets
@@ -75,34 +84,35 @@ watchEffect(() => {
 </script>
 
 <template>
-  <PlBlockPage
-    v-model:subtitle="app.model.args.customBlockLabel"
-    :subtitle-placeholder="app.model.args.defaultBlockLabel"
-    title="V/J Gene Usage"
+  <PlDropdownRef
+    v-model="app.model.args.datasetRef"
+    :options="app.model.outputs.datasetOptions"
+    label="Select dataset"
+    clearable
+    required
+    @update:model-value="setInput"
+  />
+
+  <PlTextField
+    v-model="app.model.args.customBlockLabel"
+    label="Custom label"
+    :clearable="true"
+    placeholder="Override block title"
+  />
+
+  <PlBtnGroup
+    v-model="app.model.args.allele"
+    label="Group by"
+    :options="alleleOptions"
   >
-    <PlDropdownRef
-      v-model="app.model.args.datasetRef"
-      :options="app.model.outputs.datasetOptions"
-      label="Select dataset"
-      clearable
-      required
-      @update:model-value="setInput"
-    />
+    <template #tooltip>
+      Defines whether to group data by genes or by allelic variants.
+    </template>
+  </PlBtnGroup>
 
-    <PlBtnGroup
-      v-model="app.model.args.allele"
-      label="Group by"
-      :options="alleleOptions"
-    >
-      <template #tooltip>
-        Defines whether to group data by genes or by allelic variants.
-      </template>
-    </PlBtnGroup>
-
-    <PlBtnGroup
-      v-if="isSingleCell"
-      v-model="app.model.args.scChain"
-      :options="scChainOptions ?? []"
-    />
-  </PlBlockPage>
+  <PlBtnGroup
+    v-if="isSingleCell"
+    v-model="app.model.args.scChain"
+    :options="scChainOptions ?? []"
+  />
 </template>
