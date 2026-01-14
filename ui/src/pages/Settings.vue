@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import '@milaboratories/graph-maker/styles';
 import type { PlRef } from '@platforma-sdk/model';
-import { plRefsEqual } from '@platforma-sdk/model';
-import { PlBtnGroup, PlDropdownRef } from '@platforma-sdk/ui-vue';
-import { computed } from 'vue';
+import { PlBtnGroup, PlDropdownRef, PlTextField } from '@platforma-sdk/ui-vue';
+import { computed, watchEffect } from 'vue';
 import { useApp } from '../app';
 
 const app = useApp();
 
-// Set name of the block based on the dataset
+// Set dataset
 function setInput(inputRef?: PlRef) {
   app.model.args.datasetRef = inputRef;
-  if (inputRef) {
-    const datasetLabel = app.model.outputs.datasetOptions?.find((o) => plRefsEqual(o.ref, inputRef))?.label;
-    if (datasetLabel)
-      app.model.ui.blockTitle = 'V/J Usage - ' + datasetLabel;
-  }
 }
 
 const isSingleCell = computed(() => {
@@ -63,6 +57,30 @@ const alleleOptions = computed(() => {
   ];
 });
 
+// Build defaultBlockLabel from dataset name, allele selection and chain (for single-cell)
+watchEffect(() => {
+  const parts: string[] = [];
+  // Add dataset name
+  if (app.model.args.datasetRef) {
+    const selectedOption = app.model.outputs.datasetOptions?.find(
+      (option) => option.ref === app.model.args.datasetRef,
+    );
+    if (selectedOption?.label) {
+      parts.push(selectedOption.label);
+    }
+  }
+  // Add allele/gene
+  parts.push(app.model.args.allele ? 'Allele' : 'Gene');
+  // Add chain info for single-cell datasets
+  if (isSingleCell.value && scChainOptions.value) {
+    const chainLabel = scChainOptions.value.find((o) => o.value === app.model.args.scChain)?.label;
+    if (chainLabel) {
+      parts.push(chainLabel);
+    }
+  }
+  app.model.args.defaultBlockLabel = parts.join(' - ');
+});
+
 </script>
 
 <template>
@@ -73,6 +91,13 @@ const alleleOptions = computed(() => {
     clearable
     required
     @update:model-value="setInput"
+  />
+
+  <PlTextField
+    v-model="app.model.args.customBlockLabel"
+    label="Custom label"
+    :clearable="true"
+    :placeholder="app.model.args.defaultBlockLabel"
   />
 
   <PlBtnGroup
