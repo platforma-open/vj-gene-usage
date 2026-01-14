@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
-import '@milaboratories/graph-maker/styles';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
 import { computed } from 'vue';
@@ -66,9 +65,6 @@ const statKey = computed(() => {
   };
 });
 
-const setWeightedFlag = (flag: boolean) => {
-  app.model.ui.weightedFlag = flag;
-};
 </script>
 
 <template>
@@ -81,7 +77,7 @@ const setWeightedFlag = (flag: boolean) => {
     :readonly-inputs="['value']"
   >
     <template #titleLineSlot>
-      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" @v-model:set="setWeightedFlag"/>
+      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
     </template>
   </GraphMaker>
 </template>
