@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import '@milaboratories/graph-maker/styles';
 import type { PlRef } from '@platforma-sdk/model';
 import { PlBtnGroup, PlDropdownRef, PlTextField } from '@platforma-sdk/ui-vue';
 import { computed, watchEffect } from 'vue';
