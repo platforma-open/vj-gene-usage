@@ -106,7 +106,7 @@ wf.body(func(args) {
 	datasetSpec := columns.getSpec(args.datasetRef)
 	
 	// Use block label if provided, otherwise fall back to allele/gene indicator
-	blockLabel := args.customBlockLabel || args.defaultBlockLabel || ""
+	blockLabel := args.customBlockLabel || ""
 	traceLabel := blockLabel != "" ? blockLabel : "Gene Usage " + (args.allele ? "(allele)" : "(gene)")
 	
 	trace := pSpec.makeTrace(datasetSpec,
