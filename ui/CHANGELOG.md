@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.9
+
+### Patch Changes
+
+- 4bd5061: Labels migration
+
 ## 2.1.8
 
 ### Patch Changes
