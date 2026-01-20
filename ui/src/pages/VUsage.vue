@@ -82,7 +82,7 @@ const weightOptions = [
 
 const statKey = computed(() => {
   return {
-    pf: app.model.outputs.pf,
+    pf: app.model.outputs.pf.ok ? app.model.outputs.pf.value : undefined,
     weightedFlag: app.model.ui.weightedFlag,
   };
 });
