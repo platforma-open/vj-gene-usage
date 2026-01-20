@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.10
+
+### Patch Changes
+
+- 8d6c7ba: Fix default label rendering
+
 ## 2.1.9
 
 ### Patch Changes
