@@ -1,5 +1,6 @@
 ---
 "@platforma-open/milaboratories.vj-usage.model": patch
+"@platforma-open/milaboratories.vj-usage.ui": patch
 ---
 
-Set default block label
+Improve block subtitle generation, automatically open/close settings tab
