@@ -3,6 +3,7 @@ import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
+import strings from '@milaboratories/strings';
 import { computed } from 'vue';
 import { useApp } from '../app';
 
@@ -75,6 +76,7 @@ const statKey = computed(() => {
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"
     :readonly-inputs="['value']"
+    :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
       <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
