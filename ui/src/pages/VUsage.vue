@@ -3,39 +3,24 @@ import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
 import { GraphMaker } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
-import { computed, watchEffect } from 'vue';
+import strings from '@milaboratories/strings';
+import { computed, watch } from 'vue';
 import { useApp } from '../app';
-import { useIsSingleCell, useScChainOptions } from './constants';
 import Settings from './Settings.vue';
 
 const app = useApp();
 
-// Build defaultBlockLabel from dataset name, allele selection and chain (for single-cell)
-const isSingleCell = useIsSingleCell(computed(() => app.model.outputs.datasetSpec));
-const scChainOptions = useScChainOptions(computed(() => app.model.outputs.datasetSpec));
-
-watchEffect(() => {
-  const parts: string[] = [];
-  // Add dataset name
-  if (app.model.args.datasetRef) {
-    const selectedOption = app.model.outputs.datasetOptions?.find(
-      (option) => option.ref === app.model.args.datasetRef,
-    );
-    if (selectedOption?.label) {
-      parts.push(selectedOption.label);
+// Auto-close settings panel when block starts running
+watch(
+  () => app.model.outputs.isRunning,
+  (isRunning, wasRunning) => {
+    // Close settings when block starts running (false -> true transition)
+    if (isRunning && !wasRunning) {
+      // Close the settings tab by setting currentTab to null
+      app.model.ui.vUsagePlotState.currentTab = null;
     }
-  }
-  // Add allele/gene
-  parts.push(app.model.args.allele ? 'Allele' : 'Gene');
-  // Add chain info for single-cell datasets
-  if (isSingleCell.value && scChainOptions.value) {
-    const chainLabel = scChainOptions.value.find((o) => o.value === app.model.args.scChain)?.label;
-    if (chainLabel) {
-      parts.push(chainLabel);
-    }
-  }
-  app.model.args.defaultBlockLabel = parts.join(' - ');
-});
+  },
+);
 
 const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
   const mainCol: PDataColumnSpec = {
@@ -98,6 +83,7 @@ const statKey = computed(() => {
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"
     :readonly-inputs="['value']"
+    :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
       <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
