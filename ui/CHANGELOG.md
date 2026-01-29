@@ -1,5 +1,13 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.1.11
+
+### Patch Changes
+
+- a7b6c3c: Improve block subtitle generation, automatically open/close settings tab
+- Updated dependencies [a7b6c3c]
+  - @platforma-open/milaboratories.vj-usage.model@2.1.6
+
 ## 2.1.10
 
 ### Patch Changes
