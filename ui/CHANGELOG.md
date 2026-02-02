@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.2.0
+
+### Minor Changes
+
+- 189b73a: Fix default block label derivation issue
+
 ## 2.1.11
 
 ### Patch Changes
