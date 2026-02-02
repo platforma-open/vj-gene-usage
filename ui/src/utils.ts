@@ -1,20 +1,21 @@
 import type { PColumnSpec } from '@platforma-sdk/model';
-import { computed, type ComputedRef } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
+import { computed, toValue, type ComputedRef } from 'vue';
 
 export const alleleOptions = [
   { label: 'Allele', value: true },
   { label: 'Gene', value: false },
 ] as const;
 
-export function useIsSingleCell(datasetSpec: ComputedRef<PColumnSpec | undefined>): ComputedRef<boolean> {
+export function useIsSingleCell(datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>): ComputedRef<boolean> {
   return computed(() => {
-    return datasetSpec.value?.axesSpec[1].name === 'pl7.app/vdj/scClonotypeKey';
+    return toValue(datasetSpec)?.axesSpec[1].name === 'pl7.app/vdj/scClonotypeKey';
   });
 }
 
-export function useScChainOptions(datasetSpec: ComputedRef<PColumnSpec | undefined>) {
+export function useScChainOptions(datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>) {
   return computed(() => {
-    const spec = datasetSpec.value;
+    const spec = toValue(datasetSpec);
     if (!spec) {
       return undefined;
     }
