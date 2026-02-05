@@ -1,6 +1,6 @@
 {
   "name": "@platforma-open/milaboratories.vj-usage.model",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Block model",
   "type": "module",
   "main": "./dist/index.js",
