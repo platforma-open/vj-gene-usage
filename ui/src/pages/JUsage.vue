@@ -52,19 +52,12 @@ const weightOptions = [
   },
 ];
 
-const statKey = computed(() => {
-  return {
-    pf: app.model.outputs.pf,
-    weightedFlag: app.model.ui.weightedFlag,
-  };
-});
-
 </script>
 
 <template>
   <GraphMaker
     v-model="app.model.ui.jUsagePlotState"
-    :data-state-key="statKey"
+    :data-state-key="app.model.ui.weightedFlag"
     chart-type="heatmap"
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"
