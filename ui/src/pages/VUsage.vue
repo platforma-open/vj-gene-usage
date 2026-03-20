@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
-import { GraphMaker, useGraphMakerPlugin } from '@milaboratories/graph-maker';
+import { GraphMakerPlugin } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
-import { PlBtnGroup } from '@platforma-sdk/ui-vue';
+import { PlBtnGroup, usePlugin } from '@platforma-sdk/ui-vue';
 import strings from '@milaboratories/strings';
 import { computed, watch } from 'vue';
 import { useApp } from '../app';
 import Settings from './Settings.vue';
 
 const app = useApp();
-const graphMakerPlugin = useGraphMakerPlugin<'heatmap'>(app.plugins.vUsage);
+const vUsagePlugin = usePlugin(app.plugins.vUsage);
 
 // Auto-close settings panel when block starts running
 watch(
   () => app.model.outputs.isRunning,
   (isRunning, wasRunning) => {
     if (isRunning && !wasRunning) {
-      graphMakerPlugin.state.currentTab = null;
+      (vUsagePlugin.model.data.state as { currentTab: null }).currentTab = null;
     }
   },
 );
@@ -42,13 +42,11 @@ const weightOptions = [
   { label: 'Weighted', value: true },
   { label: 'Unweighted', value: false },
 ];
-
 </script>
 
 <template>
-  <GraphMaker
-    v-model="graphMakerPlugin.state"
-    v-bind="graphMakerPlugin.props"
+  <GraphMakerPlugin
+    :instance="app.plugins.vUsage"
     :default-options="defaultOptions"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
@@ -58,5 +56,5 @@ const weightOptions = [
     <template #settingsSlot>
       <Settings/>
     </template>
-  </GraphMaker>
+  </GraphMakerPlugin>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
-import { GraphMaker, useGraphMakerPlugin } from '@milaboratories/graph-maker';
+import { GraphMakerPlugin } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
 import strings from '@milaboratories/strings';
@@ -8,7 +8,6 @@ import { computed } from 'vue';
 import { useApp } from '../app';
 
 const app = useApp();
-const graphMakerPlugin = useGraphMakerPlugin<'heatmap'>(app.plugins.jUsage);
 
 const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
   const mainCol: PDataColumnSpec = {
@@ -31,18 +30,16 @@ const weightOptions = [
   { label: 'Weighted', value: true },
   { label: 'Unweighted', value: false },
 ];
-
 </script>
 
 <template>
-  <GraphMaker
-    v-model="graphMakerPlugin.state"
-    v-bind="graphMakerPlugin.props"
+  <GraphMakerPlugin
+    :instance="app.plugins.jUsage"
     :default-options="defaultOptions"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
       <PlBtnGroup v-model="app.model.data.weightedFlag" :options="weightOptions" />
     </template>
-  </GraphMaker>
+  </GraphMakerPlugin>
 </template>
