@@ -2,24 +2,13 @@
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
 import { GraphMakerPlugin } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
-import { PlBtnGroup, usePlugin } from '@platforma-sdk/ui-vue';
+import { PlBtnGroup } from '@platforma-sdk/ui-vue';
 import strings from '@milaboratories/strings';
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useApp } from '../app';
 import Settings from './Settings.vue';
 
 const app = useApp();
-const vUsagePlugin = usePlugin(app.plugins.vUsage);
-
-// Auto-close settings panel when block starts running
-watch(
-  () => app.model.outputs.isRunning,
-  (isRunning, wasRunning) => {
-    if (isRunning && !wasRunning) {
-      (vUsagePlugin.model.data.state as { currentTab: null }).currentTab = null;
-    }
-  },
-);
 
 const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
   const mainCol: PDataColumnSpec = {
@@ -46,7 +35,7 @@ const weightOptions = [
 
 <template>
   <GraphMakerPlugin
-    :instance="app.plugins.vUsage"
+    :handle="app.plugins.vUsage.handle"
     :default-options="defaultOptions"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >

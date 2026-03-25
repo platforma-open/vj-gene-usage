@@ -34,7 +34,7 @@ const weightOptions = [
 
 <template>
   <GraphMakerPlugin
-    :instance="app.plugins.jUsage"
+    :handle="app.plugins.jUsage.handle"
     :default-options="defaultOptions"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
