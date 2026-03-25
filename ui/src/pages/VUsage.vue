@@ -1,26 +1,14 @@
 <script setup lang="ts">
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
-import { GraphMaker } from '@milaboratories/graph-maker';
+import { GraphMakerPlugin } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
 import strings from '@milaboratories/strings';
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useApp } from '../app';
 import Settings from './Settings.vue';
 
 const app = useApp();
-
-// Auto-close settings panel when block starts running
-watch(
-  () => app.model.outputs.isRunning,
-  (isRunning, wasRunning) => {
-    // Close settings when block starts running (false -> true transition)
-    if (isRunning && !wasRunning) {
-      // Close the settings tab by setting currentTab to null
-      app.model.ui.vUsagePlotState.currentTab = null;
-    }
-  },
-);
 
 const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
   const mainCol: PDataColumnSpec = {
@@ -28,61 +16,34 @@ const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
     valueType: 'Double',
     name: 'pl7.app/vdj/vGeneUsage',
     domain: {
-      'pl7.app/vdj/vjGeneUsage/type': app.model.ui.weightedFlag ? 'weighted' : 'unweighted',
+      'pl7.app/vdj/vjGeneUsage/type': app.model.data.weightedFlag ? 'weighted' : 'unweighted',
     },
     axesSpec: [],
   };
   return [
-    {
-      inputName: 'value',
-      selectedSource: mainCol,
-    },
-    {
-      inputName: 'y',
-      selectedSource: {
-        type: 'String',
-        name: 'pl7.app/vdj/vGene',
-      },
-    },
-    {
-      inputName: 'x',
-      selectedSource: {
-        type: 'String',
-        name: 'pl7.app/sampleId',
-      },
-    },
+    { inputName: 'value', selectedSource: mainCol },
+    { inputName: 'y', selectedSource: { type: 'String', name: 'pl7.app/vdj/vGene' } },
+    { inputName: 'x', selectedSource: { type: 'String', name: 'pl7.app/sampleId' } },
   ];
 });
 
 const weightOptions = [
-  {
-    label: 'Weighted',
-    value: true,
-  },
-  {
-    label: 'Unweighted',
-    value: false,
-  },
+  { label: 'Weighted', value: true },
+  { label: 'Unweighted', value: false },
 ];
-
 </script>
 
 <template>
-  <GraphMaker
-    ref="graphMaker"
-    v-model="app.model.ui.vUsagePlotState"
-    :data-state-key="app.model.ui.weightedFlag"
-    chart-type="heatmap"
-    :p-frame="app.model.outputs.pf"
+  <GraphMakerPlugin
+    :handle="app.plugins.vUsage.handle"
     :default-options="defaultOptions"
-    :readonly-inputs="['value']"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
-      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
+      <PlBtnGroup v-model="app.model.data.weightedFlag" :options="weightOptions" />
     </template>
     <template #settingsSlot>
       <Settings/>
     </template>
-  </GraphMaker>
+  </GraphMakerPlugin>
 </template>

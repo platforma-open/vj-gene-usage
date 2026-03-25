@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
-import { GraphMaker } from '@milaboratories/graph-maker';
+import { GraphMakerPlugin } from '@milaboratories/graph-maker';
 import type { PDataColumnSpec } from '@platforma-sdk/model';
 import { PlBtnGroup } from '@platforma-sdk/ui-vue';
 import strings from '@milaboratories/strings';
@@ -15,57 +15,31 @@ const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
     valueType: 'Double',
     name: 'pl7.app/vdj/jGeneUsage',
     domain: {
-      'pl7.app/vdj/vjGeneUsage/type': app.model.ui.weightedFlag ? 'weighted' : 'unweighted',
+      'pl7.app/vdj/vjGeneUsage/type': app.model.data.weightedFlag ? 'weighted' : 'unweighted',
     },
     axesSpec: [],
   };
   return [
-    {
-      inputName: 'value',
-      selectedSource: mainCol,
-    },
-    {
-      inputName: 'y',
-      selectedSource: {
-        type: 'String',
-        name: 'pl7.app/vdj/jGene',
-      },
-    },
-    {
-      inputName: 'x',
-      selectedSource: {
-        type: 'String',
-        name: 'pl7.app/sampleId',
-      },
-    },
+    { inputName: 'value', selectedSource: mainCol },
+    { inputName: 'y', selectedSource: { type: 'String', name: 'pl7.app/vdj/jGene' } },
+    { inputName: 'x', selectedSource: { type: 'String', name: 'pl7.app/sampleId' } },
   ];
 });
 
 const weightOptions = [
-  {
-    label: 'Weighted',
-    value: true,
-  },
-  {
-    label: 'Unweighted',
-    value: false,
-  },
+  { label: 'Weighted', value: true },
+  { label: 'Unweighted', value: false },
 ];
-
 </script>
 
 <template>
-  <GraphMaker
-    v-model="app.model.ui.jUsagePlotState"
-    :data-state-key="app.model.ui.weightedFlag"
-    chart-type="heatmap"
-    :p-frame="app.model.outputs.pf"
+  <GraphMakerPlugin
+    :handle="app.plugins.jUsage.handle"
     :default-options="defaultOptions"
-    :readonly-inputs="['value']"
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
-      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
+      <PlBtnGroup v-model="app.model.data.weightedFlag" :options="weightOptions" />
     </template>
-  </GraphMaker>
+  </GraphMakerPlugin>
 </template>
