@@ -15,7 +15,7 @@ const defaultOptions = computed((): PredefinedGraphOption<"heatmap">[] => {
     valueType: "Double",
     name: "pl7.app/vdj/vjGeneUsage",
     domain: {
-      "pl7.app/vdj/vjGeneUsage/type": app.model.ui.weightedFlag ? "weighted" : "unweighted",
+      "pl7.app/vdj/vjGeneUsage/type": app.model.data.weightedFlag ? "weighted" : "unweighted",
     },
     axesSpec: [],
   };
@@ -62,8 +62,8 @@ const weightOptions = [
 
 <template>
   <GraphMaker
-    v-model="app.model.ui.vjUsagePlotState"
-    :data-state-key="app.model.ui.weightedFlag"
+    v-model="app.model.data.vjUsagePlotState"
+    :data-state-key="app.model.data.weightedFlag"
     chart-type="heatmap"
     :p-frame="app.model.outputs.pf"
     :default-options="defaultOptions"
@@ -71,7 +71,7 @@ const weightOptions = [
     :status-text="{ noPframe: { title: strings.callToActions.configureSettingsAndRun } }"
   >
     <template #titleLineSlot>
-      <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
+      <PlBtnGroup v-model="app.model.data.weightedFlag" :options="weightOptions" />
     </template>
   </GraphMaker>
 </template>
