@@ -1,15 +1,17 @@
-import type { PColumnSpec } from '@platforma-sdk/model';
-import type { MaybeRefOrGetter } from 'vue';
-import { computed, toValue, type ComputedRef } from 'vue';
+import type { PColumnSpec } from "@platforma-sdk/model";
+import type { MaybeRefOrGetter } from "vue";
+import { computed, toValue, type ComputedRef } from "vue";
 
 export const alleleOptions = [
-  { label: 'Allele', value: true },
-  { label: 'Gene', value: false },
+  { label: "Allele", value: true },
+  { label: "Gene", value: false },
 ] as const;
 
-export function useIsSingleCell(datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>): ComputedRef<boolean> {
+export function useIsSingleCell(
+  datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>,
+): ComputedRef<boolean> {
   return computed(() => {
-    return toValue(datasetSpec)?.axesSpec[1].name === 'pl7.app/vdj/scClonotypeKey';
+    return toValue(datasetSpec)?.axesSpec[1].name === "pl7.app/vdj/scClonotypeKey";
   });
 }
 
@@ -25,23 +27,23 @@ export function useScChainOptions(datasetSpec: MaybeRefOrGetter<PColumnSpec | un
       return undefined;
     }
 
-    const receptor = axisSpec.domain?.['pl7.app/vdj/receptor'];
+    const receptor = axisSpec.domain?.["pl7.app/vdj/receptor"];
 
     switch (receptor) {
-      case 'IG':
+      case "IG":
         return [
-          { label: 'Heavy', value: 'A' },
-          { label: 'Light', value: 'B' },
+          { label: "Heavy", value: "A" },
+          { label: "Light", value: "B" },
         ];
-      case 'TCRAB':
+      case "TCRAB":
         return [
-          { label: 'Alpha', value: 'A' },
-          { label: 'Beta', value: 'B' },
+          { label: "Alpha", value: "A" },
+          { label: "Beta", value: "B" },
         ];
-      case 'TCRGD':
+      case "TCRGD":
         return [
-          { label: 'Gamma', value: 'A' },
-          { label: 'Delta', value: 'B' },
+          { label: "Gamma", value: "A" },
+          { label: "Delta", value: "B" },
         ];
       default:
         return [];

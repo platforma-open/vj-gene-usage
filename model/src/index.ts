@@ -1,101 +1,52 @@
-import type { GraphMakerState } from '@milaboratories/graph-maker';
-import type { InferOutputsType, PlRef } from '@platforma-sdk/model';
-import { BlockModel, createPFrameForGraphs } from '@platforma-sdk/model';
-import { getDefaultBlockLabel } from './label';
+import type { InferOutputsType } from "@platforma-sdk/model";
+import { BlockModelV3, createPFrameForGraphs } from "@platforma-sdk/model";
+import { blockDataModel } from "./dataModel";
+import type { BlockArgs } from "./types";
 
-export type BlockArgs = {
-  defaultBlockLabel: string;
-  customBlockLabel: string;
-  datasetRef?: PlRef;
-  scChain?: string;
-  allele?: boolean;
-};
+export { getDefaultBlockLabel } from "./label";
+export { blockDataModel } from "./dataModel";
+export type { BlockArgs, BlockData } from "./types";
 
-export type UiState = {
-  weightedFlag: boolean;
-  vUsagePlotState: GraphMakerState;
-  jUsagePlotState: GraphMakerState;
-  vjUsagePlotState: GraphMakerState;
-};
-
-export const model = BlockModel.create()
-
-  .withArgs<BlockArgs>({
-    defaultBlockLabel: getDefaultBlockLabel({
-      allele: false,
-      isSingleCell: false,
-    }),
-    customBlockLabel: '',
-    scChain: 'A',
-    allele: false,
+export const platforma = BlockModelV3.create(blockDataModel)
+  .args<BlockArgs>((data) => {
+    if (data.datasetRef === undefined) throw new Error("Dataset is required");
+    return {
+      datasetRef: data.datasetRef,
+      scChain: data.scChain,
+      allele: data.allele,
+      customBlockLabel: data.customBlockLabel,
+    };
   })
 
-  .withUiState<UiState>({
-    weightedFlag: true,
-    vUsagePlotState: {
-      title: 'V Usage',
-      template: 'heatmapClustered',
-      currentTab: 'settings',
-      layersSettings: {
-        heatmapClustered: {
-          normalizationDirection: null,
+  .output("datasetOptions", (ctx) =>
+    ctx.resultPool.getOptions(
+      [
+        {
+          axes: [{ name: "pl7.app/sampleId" }, { name: "pl7.app/vdj/clonotypeKey" }],
+          annotations: { "pl7.app/isAnchor": "true" },
         },
-      },
-    },
-    jUsagePlotState: {
-      title: 'J Usage',
-      template: 'heatmapClustered',
-      currentTab: null,
-      layersSettings: {
-        heatmapClustered: {
-          normalizationDirection: null,
+        {
+          axes: [{ name: "pl7.app/sampleId" }, { name: "pl7.app/vdj/scClonotypeKey" }],
+          annotations: { "pl7.app/isAnchor": "true" },
         },
-      },
-    },
-    vjUsagePlotState: {
-      title: 'V/J Usage',
-      template: 'heatmapClustered',
-      currentTab: null,
-      layersSettings: {
-        heatmapClustered: {
-          normalizationDirection: null,
-        },
-      },
-    },
-  })
-
-  .argsValid((ctx) => ctx.args.datasetRef !== undefined)
-
-  .output('datasetOptions', (ctx) =>
-    ctx.resultPool.getOptions([{
-      axes: [
-        { name: 'pl7.app/sampleId' },
-        { name: 'pl7.app/vdj/clonotypeKey' },
       ],
-      annotations: { 'pl7.app/isAnchor': 'true' },
-    }, {
-      axes: [
-        { name: 'pl7.app/sampleId' },
-        { name: 'pl7.app/vdj/scClonotypeKey' },
-      ],
-      annotations: { 'pl7.app/isAnchor': 'true' },
-    }],
-    {
-      // suppress native label of the column (e.g. "Number of Reads") to show only the dataset label
-      label: { includeNativeLabel: false },
-    }),
+      {
+        // suppress native label of the column (e.g. "Number of Reads") to show only the dataset label
+        label: { includeNativeLabel: false },
+      },
+    ),
   )
 
-  .output('datasetSpec', (ctx) => {
-    if (ctx.args.datasetRef === undefined) {
+  .output("datasetSpec", (ctx) => {
+    if (ctx.data.datasetRef === undefined) {
       return undefined;
     }
 
-    return ctx.resultPool.getPColumnSpecByRef(ctx.args.datasetRef);
+    return ctx.resultPool.getPColumnSpecByRef(ctx.data.datasetRef);
   })
 
-  .outputWithStatus('pf', (ctx) => {
-    const pCols = ctx.outputs?.resolve('pf')?.getPColumns();
+  .outputWithStatus("pf", (ctx) => {
+    const pCols = ctx.outputs?.resolve("pf")?.getPColumns();
     if (pCols === undefined) {
       return undefined;
     }
@@ -103,20 +54,19 @@ export const model = BlockModel.create()
     return createPFrameForGraphs(ctx, pCols);
   })
 
-  .output('isRunning', (ctx) => ctx.outputs?.getIsReadyOrError() === false)
+  .output("isRunning", (ctx) => ctx.outputs?.getIsReadyOrError() === false)
 
-  .title(() => 'V/J Usage')
+  .title(() => "V/J Usage")
 
-  .subtitle((ctx) => ctx.args.customBlockLabel || ctx.args.defaultBlockLabel)
+  .subtitle((ctx) => ctx.data.customBlockLabel || ctx.data.defaultBlockLabel)
 
-  .sections((_) => [
-    { type: 'link', href: '/', label: 'V Gene Usage' },
-    { type: 'link', href: '/jUsage', label: 'J Gene Usage' },
-    { type: 'link', href: '/vjUsage', label: 'V/J Gene Usage' },
+  .sections(() => [
+    { type: "link" as const, href: "/" as const, label: "V Gene Usage" },
+    { type: "link" as const, href: "/jUsage" as const, label: "J Gene Usage" },
+    { type: "link" as const, href: "/vjUsage" as const, label: "V/J Gene Usage" },
   ])
 
-  .done(2);
+  .done();
 
-export type BlockOutputs = InferOutputsType<typeof model>;
-
-export { getDefaultBlockLabel } from './label';
+export type Platforma = typeof platforma;
+export type BlockOutputs = InferOutputsType<typeof platforma>;
