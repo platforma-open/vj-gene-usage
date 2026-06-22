@@ -12,12 +12,12 @@ export function getDefaultBlockLabel(data: {
   }
 
   // Add allele/gene
-  parts.push(data.allele ? 'Allele' : 'Gene');
+  parts.push(data.allele ? "Allele" : "Gene");
 
   // Add chain info for single-cell datasets
   if (data.isSingleCell && data.chainLabel) {
     parts.push(data.chainLabel);
   }
 
-  return parts.join(' - ');
+  return parts.join(" - ");
 }

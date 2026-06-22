@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { PredefinedGraphOption } from '@milaboratories/graph-maker';
-import { GraphMaker } from '@milaboratories/graph-maker';
-import type { PDataColumnSpec } from '@platforma-sdk/model';
-import { PlBtnGroup } from '@platforma-sdk/ui-vue';
-import strings from '@milaboratories/strings';
-import { computed, watch } from 'vue';
-import { useApp } from '../app';
-import Settings from './Settings.vue';
+import type { PredefinedGraphOption } from "@milaboratories/graph-maker";
+import { GraphMaker } from "@milaboratories/graph-maker";
+import type { PDataColumnSpec } from "@platforma-sdk/model";
+import { PlBtnGroup } from "@platforma-sdk/ui-vue";
+import strings from "@milaboratories/strings";
+import { computed, watch } from "vue";
+import { useApp } from "../app";
+import Settings from "./Settings.vue";
 
 const app = useApp();
 
@@ -22,33 +22,33 @@ watch(
   },
 );
 
-const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
+const defaultOptions = computed((): PredefinedGraphOption<"heatmap">[] => {
   const mainCol: PDataColumnSpec = {
-    kind: 'PColumn',
-    valueType: 'Double',
-    name: 'pl7.app/vdj/vGeneUsage',
+    kind: "PColumn",
+    valueType: "Double",
+    name: "pl7.app/vdj/vGeneUsage",
     domain: {
-      'pl7.app/vdj/vjGeneUsage/type': app.model.ui.weightedFlag ? 'weighted' : 'unweighted',
+      "pl7.app/vdj/vjGeneUsage/type": app.model.ui.weightedFlag ? "weighted" : "unweighted",
     },
     axesSpec: [],
   };
   return [
     {
-      inputName: 'value',
+      inputName: "value",
       selectedSource: mainCol,
     },
     {
-      inputName: 'y',
+      inputName: "y",
       selectedSource: {
-        type: 'String',
-        name: 'pl7.app/vdj/vGene',
+        type: "String",
+        name: "pl7.app/vdj/vGene",
       },
     },
     {
-      inputName: 'x',
+      inputName: "x",
       selectedSource: {
-        type: 'String',
-        name: 'pl7.app/sampleId',
+        type: "String",
+        name: "pl7.app/sampleId",
       },
     },
   ];
@@ -56,15 +56,14 @@ const defaultOptions = computed((): PredefinedGraphOption<'heatmap'>[] => {
 
 const weightOptions = [
   {
-    label: 'Weighted',
+    label: "Weighted",
     value: true,
   },
   {
-    label: 'Unweighted',
+    label: "Unweighted",
     value: false,
   },
 ];
-
 </script>
 
 <template>
@@ -82,7 +81,7 @@ const weightOptions = [
       <PlBtnGroup v-model="app.model.ui.weightedFlag" :options="weightOptions" />
     </template>
     <template #settingsSlot>
-      <Settings/>
+      <Settings />
     </template>
   </GraphMaker>
 </template>

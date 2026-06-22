@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { PlRef } from '@platforma-sdk/model';
-import { PlBtnGroup, PlDropdownRef, PlTextField } from '@platforma-sdk/ui-vue';
-import { computed } from 'vue';
-import { useApp } from '../app';
-import { alleleOptions, useIsSingleCell, useScChainOptions } from '../utils';
+import type { PlRef } from "@platforma-sdk/model";
+import { PlBtnGroup, PlDropdownRef, PlTextField } from "@platforma-sdk/ui-vue";
+import { computed } from "vue";
+import { useApp } from "../app";
+import { alleleOptions, useIsSingleCell, useScChainOptions } from "../utils";
 
 const app = useApp();
 
@@ -33,14 +33,8 @@ const scChainOptions = useScChainOptions(computed(() => app.model.outputs.datase
     :placeholder="app.model.args.defaultBlockLabel"
   />
 
-  <PlBtnGroup
-    v-model="app.model.args.allele"
-    label="Group by"
-    :options="alleleOptions"
-  >
-    <template #tooltip>
-      Defines whether to group data by genes or by allelic variants.
-    </template>
+  <PlBtnGroup v-model="app.model.args.allele" label="Group by" :options="alleleOptions">
+    <template #tooltip> Defines whether to group data by genes or by allelic variants. </template>
   </PlBtnGroup>
 
   <PlBtnGroup
