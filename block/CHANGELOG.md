@@ -1,5 +1,25 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.2.0
+
+### Minor Changes
+
+- 135171f: Migrate onto the block-tools structurer (full SDK upgrade: model/ui-vue 1.79.14,
+  workflow-tengo 6.6.3, tengo-builder 4.0.8) and BlockModelV3.
+
+  Persisted state is preserved via the legacy upgrader. UI bindings move to
+  `app.model.data`. The three plot view states, `weightedFlag`, and the derived
+  block label are now UI-only and no longer stale the block; only the dataset,
+  allele/gene toggle, single-cell chain, and custom block label do. Graphs remain
+  the standard `<GraphMaker>` component.
+
+### Patch Changes
+
+- Updated dependencies [135171f]
+  - @platforma-open/milaboratories.vj-usage.model@2.2.0
+  - @platforma-open/milaboratories.vj-usage.ui@2.3.0
+  - @platforma-open/milaboratories.vj-usage.workflow@2.4.5
+
 ## 2.1.19
 
 ### Patch Changes
