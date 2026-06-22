@@ -5,7 +5,7 @@ import type { BlockArgs } from "./types";
 
 export { getDefaultBlockLabel } from "./label";
 export { blockDataModel } from "./dataModel";
-export * from "./types";
+export type { BlockArgs, BlockData } from "./types";
 
 export const platforma = BlockModelV3.create(blockDataModel)
   .args<BlockArgs>((data) => {
