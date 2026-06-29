@@ -17,7 +17,7 @@ catalog:
   '@platforma-sdk/block-tools': 2.11.1
   '@platforma-sdk/test': 1.79.15
   '@milaboratories/helpers': 1.13.0
-  '@milaboratories/graph-maker': 1.1.222
+  '@milaboratories/graph-maker': 1.4.6
   '@milaboratories/strings': 0.1.0
 
   # Common dependencies - can use ^ or ~
