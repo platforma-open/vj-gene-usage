@@ -25,7 +25,10 @@ type AppModel = ReturnType<typeof useApp>["model"];
 
 function syncDefaultBlockLabel(model: AppModel) {
   const isSingleCell = useIsSingleCell(() => model.outputs.datasetSpec);
-  const scChainOptions = useScChainOptions(() => model.outputs.datasetSpec);
+  const scChainOptions = useScChainOptions(
+    () => model.outputs.datasetSpec,
+    () => model.outputs.availableScChains,
+  );
 
   const datasetLabel = computed(() => {
     if (!model.data.datasetRef) return;

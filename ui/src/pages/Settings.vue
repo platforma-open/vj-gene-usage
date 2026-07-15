@@ -7,7 +7,10 @@ import { alleleOptions, useIsSingleCell, useScChainOptions } from "../utils";
 const app = useApp();
 
 const isSingleCell = useIsSingleCell(computed(() => app.model.outputs.datasetSpec));
-const scChainOptions = useScChainOptions(computed(() => app.model.outputs.datasetSpec));
+const scChainOptions = useScChainOptions(
+  computed(() => app.model.outputs.datasetSpec),
+  computed(() => app.model.outputs.availableScChains),
+);
 </script>
 
 <template>
@@ -31,7 +34,7 @@ const scChainOptions = useScChainOptions(computed(() => app.model.outputs.datase
   </PlBtnGroup>
 
   <PlBtnGroup
-    v-if="isSingleCell"
+    v-if="isSingleCell && (scChainOptions?.length ?? 0) > 1"
     v-model="app.model.data.scChain"
     :options="scChainOptions ?? []"
   />
