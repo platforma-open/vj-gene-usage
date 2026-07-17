@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.2.3
+
+### Patch Changes
+
+- 50ef10d: Add missing flag in prepublishOnly
+
 ## 2.2.2
 
 ### Patch Changes
