@@ -1,6 +1,6 @@
 {
   "name": "@platforma-open/milaboratories.vj-usage",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "files": [
     "index.d.ts",
     "index.js"
