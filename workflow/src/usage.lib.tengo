@@ -8,7 +8,7 @@ calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
 	wf := pt.workflow().
 			 mem("16GiB"). // @TODO: set based on the size of the input
 			 cpu(4)
-	df := wf.frame(tsv, {xsvType: "tsv"})
+	df := wf.frame(tsv)
 
 	// Sample total aggregation
 	sampleTotalsDf := df.
