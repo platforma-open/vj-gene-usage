@@ -95,7 +95,9 @@ wf.body(func(args) {
 	table.add(vGeneCol, {header: "vGene"})
 	table.add(jGeneCol, {header: "jGene"})
 	table.add(columns.getColumn("abundance"), {header: "abundance"})
-	tsv := table.build()
+	// buildForPT() (not build()) so the TSV carries a declared PTabler schema: column
+	// types come from the p-column/axis specs instead of polars' CSV type inference.
+	tsv := table.buildForPT()
 
 	results := usage.calculateUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
 	vjUsage := results.vjUsage
