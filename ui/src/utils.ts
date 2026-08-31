@@ -33,6 +33,7 @@ export function useScChainOptions(
     const receptor = axisSpec.domain?.["pl7.app/vdj/receptor"];
 
     let options: { label: string; value: string }[];
+    // A/B order is the producers' (mixcr-clonotyping, import-vdj-data): A is the more diverse chain.
     switch (receptor) {
       case "IG":
         options = [
@@ -42,14 +43,14 @@ export function useScChainOptions(
         break;
       case "TCRAB":
         options = [
-          { label: "Alpha", value: "A" },
-          { label: "Beta", value: "B" },
+          { label: "Beta", value: "A" },
+          { label: "Alpha", value: "B" },
         ];
         break;
       case "TCRGD":
         options = [
-          { label: "Gamma", value: "A" },
-          { label: "Delta", value: "B" },
+          { label: "Delta", value: "A" },
+          { label: "Gamma", value: "B" },
         ];
         break;
       default:
