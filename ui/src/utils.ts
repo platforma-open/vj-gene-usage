@@ -1,3 +1,4 @@
+import type { ScChain } from "@platforma-open/milaboratories.vj-usage.model";
 import type { PColumnSpec } from "@platforma-sdk/model";
 import type { MaybeRefOrGetter } from "vue";
 import { computed, toValue, type ComputedRef } from "vue";
@@ -32,7 +33,7 @@ export function useScChainOptions(
 
     const receptor = axisSpec.domain?.["pl7.app/vdj/receptor"];
 
-    let options: { label: string; value: string }[];
+    let options: { label: string; value: ScChain }[];
     switch (receptor) {
       case "IG":
         options = [
