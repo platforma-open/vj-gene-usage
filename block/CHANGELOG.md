@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.3.0
+
+### Minor Changes
+
+- 3821d41: Add a block kind with an init-params contract, so the block can be created from a project template
+
 ## 2.2.4
 
 ### Patch Changes
