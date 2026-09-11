@@ -11,7 +11,15 @@ const usagePlot = (title: string, currentTab: GraphMakerState["currentTab"]): Gr
   layersSettings: { heatmapClustered: { normalizationDirection: null } },
 });
 
-const initData = ({ params }: { params?: BlockParams }): BlockData => {
+/**
+ * The state a block starts life in, from the params a template seeded it with — the inverse
+ * of `deriveTemplateParams` over every field a user sets by hand.
+ *
+ * Exported so the round-trip test can drive it directly: `.init` is the only consumer in
+ * production, but a projection that drifts from this function is exactly the bug that ships
+ * silently while every parser test stays green.
+ */
+export const initBlockData = (params?: BlockParams): BlockData => {
   const allele = params?.allele ?? false;
   return {
     datasetRef: params?.datasetRef,
@@ -48,4 +56,4 @@ export const blockDataModel = new DataModelBuilder({ kind })
       vjUsagePlotState: uiState?.vjUsagePlotState ?? usagePlot("V/J Usage", null),
     };
   })
-  .init(initData);
+  .init(({ params }) => initBlockData(params));
