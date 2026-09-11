@@ -1,5 +1,10 @@
 import type { GraphMakerState } from "@milaboratories/graph-maker";
 import type { PlRef } from "@platforma-sdk/model";
+// The chain letter lives in the kind: its init-params contract names it, and a kind
+// cannot import from the model.
+import type { ScChain } from "@platforma-open/milaboratories.vj-usage.kind";
+
+export type * from "@platforma-open/milaboratories.vj-usage.kind";
 
 /**
  * Unified V3 data — the UI's persisted state. The three plot states,
@@ -8,7 +13,7 @@ import type { PlRef } from "@platforma-sdk/model";
  */
 export type BlockData = {
   datasetRef?: PlRef;
-  scChain?: string;
+  scChain?: ScChain;
   allele?: boolean;
   defaultBlockLabel: string;
   customBlockLabel: string;
@@ -25,7 +30,7 @@ export type BlockData = {
  */
 export type BlockArgs = {
   datasetRef: PlRef;
-  scChain?: string;
+  scChain?: ScChain;
   allele?: boolean;
   customBlockLabel: string;
 };
@@ -35,7 +40,7 @@ export type LegacyBlockArgs = {
   defaultBlockLabel: string;
   customBlockLabel: string;
   datasetRef?: PlRef;
-  scChain?: string;
+  scChain?: ScChain;
   allele?: boolean;
 };
 export type LegacyUiState = {
