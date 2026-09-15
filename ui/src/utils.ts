@@ -1,3 +1,4 @@
+import type { ScChain } from "@platforma-open/milaboratories.vj-usage.model";
 import type { PColumnSpec } from "@platforma-sdk/model";
 import type { MaybeRefOrGetter } from "vue";
 import { computed, toValue, type ComputedRef } from "vue";
@@ -34,7 +35,7 @@ export function useScChainOptions(
 
     // Values are the producers' (mixcr-clonotyping, import-vdj-data): A is the more diverse
     // chain. Array order is display order, kept in the classic annotation order.
-    let options: { label: string; value: string }[];
+    let options: { label: string; value: ScChain }[];
     switch (receptor) {
       case "IG":
         options = [

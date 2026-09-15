@@ -1,6 +1,7 @@
 {
   "name": "@platforma-open/milaboratories.vj-usage.workflow",
   "version": "2.4.6",
+  "private": true,
   "description": "Tengo-based template",
   "type": "module",
   "scripts": {
