@@ -33,6 +33,8 @@ export function useScChainOptions(
 
     const receptor = axisSpec.domain?.["pl7.app/vdj/receptor"];
 
+    // Values are the producers' (mixcr-clonotyping, import-vdj-data): A is the more diverse
+    // chain. Array order is display order, kept in the classic annotation order.
     let options: { label: string; value: ScChain }[];
     switch (receptor) {
       case "IG":
@@ -43,14 +45,14 @@ export function useScChainOptions(
         break;
       case "TCRAB":
         options = [
-          { label: "Alpha", value: "A" },
-          { label: "Beta", value: "B" },
+          { label: "Alpha", value: "B" },
+          { label: "Beta", value: "A" },
         ];
         break;
       case "TCRGD":
         options = [
-          { label: "Gamma", value: "A" },
-          { label: "Delta", value: "B" },
+          { label: "Gamma", value: "B" },
+          { label: "Delta", value: "A" },
         ];
         break;
       default:
