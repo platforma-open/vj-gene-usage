@@ -1,20 +1,12 @@
 import type { ScChain } from "@platforma-open/milaboratories.vj-usage.model";
 import type { PColumnSpec } from "@platforma-sdk/model";
 import type { MaybeRefOrGetter } from "vue";
-import { computed, toValue, type ComputedRef } from "vue";
+import { computed, toValue } from "vue";
 
 export const alleleOptions = [
   { label: "Allele", value: true },
   { label: "Gene", value: false },
 ] as const;
-
-export function useIsSingleCell(
-  datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>,
-): ComputedRef<boolean> {
-  return computed(() => {
-    return toValue(datasetSpec)?.axesSpec[1].name === "pl7.app/vdj/scClonotypeKey";
-  });
-}
 
 export function useScChainOptions(
   datasetSpec: MaybeRefOrGetter<PColumnSpec | undefined>,

@@ -5,7 +5,7 @@ import { computed, watch, watchEffect } from "vue";
 import JUsage from "./pages/JUsage.vue";
 import VJUsage from "./pages/VJUsage.vue";
 import VUsage from "./pages/VUsage.vue";
-import { useIsSingleCell, useScChainOptions } from "./utils";
+import { useScChainOptions } from "./utils";
 
 export const sdkPlugin = defineAppV3(platforma, (app) => {
   syncDefaultBlockLabel(app.model);
@@ -24,7 +24,7 @@ export const useApp = sdkPlugin.useApp;
 type AppModel = ReturnType<typeof useApp>["model"];
 
 function syncDefaultBlockLabel(model: AppModel) {
-  const isSingleCell = useIsSingleCell(() => model.outputs.datasetSpec);
+  const isSingleCell = computed(() => model.outputs.isSingleCell ?? false);
   const scChainOptions = useScChainOptions(
     () => model.outputs.datasetSpec,
     () => model.outputs.availableScChains,
