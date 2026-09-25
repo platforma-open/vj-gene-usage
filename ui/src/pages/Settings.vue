@@ -2,11 +2,11 @@
 import { PlBtnGroup, PlDropdownRef, PlTextField } from "@platforma-sdk/ui-vue";
 import { computed } from "vue";
 import { useApp } from "../app";
-import { alleleOptions, useIsSingleCell, useScChainOptions } from "../utils";
+import { alleleOptions, useScChainOptions } from "../utils";
 
 const app = useApp();
 
-const isSingleCell = useIsSingleCell(computed(() => app.model.outputs.datasetSpec));
+const isSingleCell = computed(() => app.model.outputs.isSingleCell ?? false);
 const scChainOptions = useScChainOptions(
   computed(() => app.model.outputs.datasetSpec),
   computed(() => app.model.outputs.availableScChains),

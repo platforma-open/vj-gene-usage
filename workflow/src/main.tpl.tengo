@@ -60,7 +60,14 @@ wf.prepare(func(args) {
 
 wf.body(func(args) {
 	columns := args.columns
+	// Paired when chains share one frame. MiXCR single-cell says so on the axis name; an imported
+	// (variantKey) paired set says so only in the pl7.app/vdj/scClonotypeChain column domain.
 	isSingleCell := args.columns.getSpec(args.datasetRef).axesSpec[1].name == "pl7.app/vdj/scClonotypeKey"
+	for col in columns.getColumns("vGene") {
+		if col.spec.domain["pl7.app/vdj/scClonotypeChain"] != undefined {
+			isSingleCell = true
+		}
+	}
 
 	vGeneCol := undefined
 	jGeneCol := undefined
