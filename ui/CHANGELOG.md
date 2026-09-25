@@ -1,5 +1,16 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.5.0
+
+### Minor Changes
+
+- 63a47fc: Accept imported (bare) antibody/TCR sets from Import V(D)J Data that carry V and J gene columns; detect paired sets from their chain columns; skip records with a blank gene call
+
+### Patch Changes
+
+- Updated dependencies [63a47fc]
+  - @platforma-open/milaboratories.vj-usage.model@2.3.0
+
 ## 2.4.0
 
 ### Minor Changes
