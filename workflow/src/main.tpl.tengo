@@ -3,6 +3,7 @@ wf := import("@platforma-sdk/workflow-tengo:workflow")
 ll := import("@platforma-sdk/workflow-tengo:ll")
 pframes := import("@platforma-sdk/workflow-tengo:pframes")
 pSpec := import("@platforma-sdk/workflow-tengo:pframes.spec")
+json := import("json")
 
 filter := func(arr, predicate) {
 	filtered := []
@@ -50,6 +51,11 @@ wf.prepare(func(args) {
 		geneLower + "Gene")
 	}
 
+	// Optional subset column picked alongside the dataset (PlDatasetSelector)
+	if !is_undefined(args.inputFilter) {
+		bundleBuilder.addRef(json.decode(args.inputFilter))
+	}
+
 	return { 
 		columns: bundleBuilder.build()
 	}
@@ -91,17 +97,45 @@ wf.body(func(args) {
 	jGeneSpec := jGeneCol.spec
 	abundanceSpec := columns.getSpec("abundance")
 
-	table := pframes.tsvFileBuilder()
-	table.mem("16GiB") // @TODO: set based on the size of the input
+	// Optional subset: only its clonotypes enter the usage. The trace roots in the filter so
+	// downstream labels name it.
+	filterColumn := undefined
+	traceSpec := columns.getSpec(args.datasetRef)
+	if !is_undefined(args.inputFilter) {
+		f := columns.getColumn(json.decode(args.inputFilter))
+		filterColumn = { spec: f.spec, data: f.data }
+		traceSpec = f.spec
+	}
 
-	table.setAxisHeader("pl7.app/sampleId", "sample")
-	table.setAxisHeader(abundanceSpec.axesSpec[1].name, "clonotypeKey")
-	table.add(vGeneCol, {header: "vGene"})
-	table.add(jGeneCol, {header: "jGene"})
-	table.add(columns.getColumn("abundance"), {header: "abundance"})
-	// buildForPT() (not build()) so the TSV carries a declared PTabler schema: column
-	// types come from the p-column/axis specs instead of polars' CSV type inference.
-	tsv := table.buildForPT()
+	tsv := undefined
+	if is_undefined(filterColumn) {
+		table := pframes.tsvFileBuilder()
+		table.mem("16GiB") // @TODO: set based on the size of the input
+
+		table.setAxisHeader("pl7.app/sampleId", "sample")
+		table.setAxisHeader(abundanceSpec.axesSpec[1].name, "clonotypeKey")
+		table.add(vGeneCol, {header: "vGene"})
+		table.add(jGeneCol, {header: "jGene"})
+		table.add(columns.getColumn("abundance"), {header: "abundance"})
+		// buildForPT() (not build()) so the TSV carries a declared PTabler schema: column
+		// types come from the p-column/axis specs instead of polars' CSV type inference.
+		tsv = table.buildForPT()
+	} else {
+		// The abundance is the filtered primary and the genes fill its rows. Parquet keeps the
+		// spec types, as buildForPT does for the TSV.
+		table := pframes.tableBuilder("parquet").setColumnJoin("left")
+		table.mem("16GiB")
+		table.setAxisHeader("pl7.app/sampleId", "sample")
+		table.setAxisHeader(abundanceSpec.axesSpec[1].name, "clonotypeKey")
+		table.addPrimary("main", {
+			__isPrimaryRef: "v1",
+			column: columns.getColumn("abundance"),
+			filter: filterColumn
+		}, {header: "abundance"})
+		table.addColumn(vGeneCol, {header: "vGene"})
+		table.addColumn(jGeneCol, {header: "jGene"})
+		tsv = { xsvType: "parquet", file: table.build() }
+	}
 
 	results := usage.calculateUsage(vGeneSpec, jGeneSpec, abundanceSpec, tsv)
 	vjUsage := results.vjUsage
@@ -109,28 +143,36 @@ wf.body(func(args) {
 	jUsage := results.jUsage
 
 	// Make trace for provenance
-	datasetSpec := columns.getSpec(args.datasetRef)
 	
 	// Use block label if provided, otherwise fall back to allele/gene indicator
 	blockLabel := args.customBlockLabel || ""
 	traceLabel := blockLabel != "" ? blockLabel : "Gene Usage " + (args.allele ? "(allele)" : "(gene)")
 	
-	trace := pSpec.makeTrace(datasetSpec,
+	trace := pSpec.makeTrace(traceSpec,
 		{
 			type: "milaboratories.vj-gene-usage",
 			importance: 45,
 			label: traceLabel
 		})
 
+	// Trace, plus the subset stamp on a subset run (its outputs cover only the subset)
+	exportSpec := func(spec) {
+		s := trace.inject(spec)
+		if !is_undefined(filterColumn) {
+			s.domain["pl7.app/inputSubset"] = args.inputFilter
+		}
+		return s
+	}
+
 	pf := pframes.pFrameBuilder()
 	for id, v in vjUsage {
-		pf.add(id + "-vj", trace.inject(v.spec), v.data)
+		pf.add(id + "-vj", exportSpec(v.spec), v.data)
 	}
 	for id, v in vUsage {
-		pf.add(id + "-v", trace.inject(v.spec), v.data)
+		pf.add(id + "-v", exportSpec(v.spec), v.data)
 	}
 	for id, v in jUsage {
-		pf.add(id + "-j", trace.inject(v.spec), v.data)
+		pf.add(id + "-j", exportSpec(v.spec), v.data)
 	}
 	pf = pf.build()
 

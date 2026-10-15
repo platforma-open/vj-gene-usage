@@ -24,6 +24,7 @@ const usagePlot = (title: string, currentTab: "settings" | null) => ({
 
 const CONFIGURED: BlockData = {
   datasetRef: { __isRef: true, blockId: "b1", name: "pf/dataset" },
+  filterRef: { __isRef: true, blockId: "b2", name: "labels.igg" },
   scChain: "B",
   allele: true,
   defaultBlockLabel: "Donor 3 - Allele - Light",
@@ -39,6 +40,7 @@ describe("export -> apply", () => {
     const seeded = roundTrip(CONFIGURED);
 
     expect(seeded.datasetRef).toEqual(CONFIGURED.datasetRef);
+    expect(seeded.filterRef).toEqual(CONFIGURED.filterRef);
     expect(seeded.scChain).toBe(CONFIGURED.scChain);
     expect(seeded.allele).toBe(CONFIGURED.allele);
     expect(seeded.weightedFlag).toBe(CONFIGURED.weightedFlag);

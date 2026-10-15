@@ -23,6 +23,7 @@ export const initBlockData = (params?: BlockParams): BlockData => {
   const allele = params?.allele ?? false;
   return {
     datasetRef: params?.datasetRef,
+    filterRef: params?.filterRef,
     scChain: params?.scChain ?? "A",
     allele,
     // The dataset's and the chain's human labels come from the result pool, which `init`

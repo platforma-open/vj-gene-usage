@@ -12,8 +12,8 @@ export type ScChain = "A" | "B";
 
 /**
  * This block's init-params contract — everything a user sets by hand: the dataset
- * to profile, the chain to read on single-cell data, whether usage is counted per
- * allele or per gene, whether the plots weight each clonotype by its abundance,
+ * to profile and an optional subset of it, the chain to read on single-cell data,
+ * whether usage is counted per allele or per gene, whether the plots weight each clonotype by its abundance,
  * and the subtitle they type.
  *
  * `defaultBlockLabel` is absent: a `watchEffect` in `ui/src/app.ts` builds it from
@@ -32,6 +32,8 @@ export type ScChain = "A" | "B";
  */
 export type BlockParams = {
   datasetRef?: PlRef;
+  /** A subset column (`pl7.app/isSubset`) the dataset is restricted to before the analysis. */
+  filterRef?: PlRef;
   scChain?: ScChain;
   allele?: boolean;
   weightedFlag?: boolean;
@@ -55,11 +57,16 @@ const SC_CHAINS: readonly string[] = ["A", "B"];
 function parseInitializationParams(value: unknown): BlockParams {
   assertParamsObject(value);
 
-  const { datasetRef, scChain, allele, weightedFlag, customBlockLabel } = value;
+  const { datasetRef, filterRef, scChain, allele, weightedFlag, customBlockLabel } = value;
 
   if (datasetRef !== undefined && !isPlRef(datasetRef)) {
     throw new Error(
       "'datasetRef' must be a reference to an upstream dataset, written as { block, name }.",
+    );
+  }
+  if (filterRef !== undefined && !isPlRef(filterRef)) {
+    throw new Error(
+      "'filterRef' must be a reference to an upstream subset column, written as { block, name }.",
     );
   }
   // Checked as an envelope, not against the dataset: whether a chain letter means
@@ -81,6 +88,7 @@ function parseInitializationParams(value: unknown): BlockParams {
 
   return {
     datasetRef,
+    filterRef,
     scChain: scChain as ScChain | undefined,
     allele,
     weightedFlag,
