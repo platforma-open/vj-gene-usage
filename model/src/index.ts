@@ -3,7 +3,9 @@ import {
   BlockModelV3,
   buildDatasetOptions,
   createGlobalPObjectId,
-  createPFrameForGraphs,
+  getRelatedColumns,
+  isHiddenFromGraphColumn,
+  isHiddenFromUIColumn,
   isPColumnSpec,
 } from "@platforma-sdk/model";
 import { kind } from "@platforma-open/milaboratories.vj-usage.kind";
@@ -26,6 +28,12 @@ export type * from "@platforma-open/milaboratories.vj-usage.kind";
 
 /** A usage needs both genes on a chain; either alone gives no V/J pair. */
 const GENES = ["VGene", "JGene"];
+
+const USAGE_COLUMN_NAMES = new Set([
+  "pl7.app/vdj/vjGeneUsage",
+  "pl7.app/vdj/vGeneUsage",
+  "pl7.app/vdj/jGeneUsage",
+]);
 
 export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind })
   .args<BlockArgs>((data) => {
@@ -95,7 +103,17 @@ export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind }
       return undefined;
     }
 
-    return createPFrameForGraphs(ctx, pCols);
+    if (pCols.some((c) => c.data === undefined)) return undefined;
+    // Usage columns of other instances of this block (e.g. a full run next to a subset run)
+    // share names with ours and could take over the plots, so only ours are kept.
+    const related = getRelatedColumns(ctx, {
+      columns: pCols,
+      predicate: (spec) =>
+        !isHiddenFromUIColumn(spec) &&
+        !isHiddenFromGraphColumn(spec) &&
+        !USAGE_COLUMN_NAMES.has(spec.name),
+    });
+    return ctx.createPFrame([...pCols, ...related]);
   })
 
   .output("isRunning", (ctx) => ctx.outputs?.getIsReadyOrError() === false)
