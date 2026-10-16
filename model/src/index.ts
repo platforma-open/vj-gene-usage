@@ -1,8 +1,22 @@
-import type { InferOutputsType } from "@platforma-sdk/model";
-import { BlockModelV3, createPFrameForGraphs, isPColumnSpec } from "@platforma-sdk/model";
+import type { DatasetOption, InferOutputsType } from "@platforma-sdk/model";
+import {
+  BlockModelV3,
+  buildDatasetOptions,
+  createGlobalPObjectId,
+  getRelatedColumns,
+  isHiddenFromGraphColumn,
+  isHiddenFromUIColumn,
+  isPColumnSpec,
+} from "@platforma-sdk/model";
 import { kind } from "@platforma-open/milaboratories.vj-usage.kind";
 import { blockDataModel } from "./dataModel";
-import { chainsWithGenes, isBareSetAxis, isDatasetSpec, isPairedDataset } from "./dataset";
+import {
+  chainsWithGenes,
+  isBareSetAxis,
+  isDatasetSpec,
+  isPairedDataset,
+  isReceptorRecordAxis,
+} from "./dataset";
 import { deriveTemplateParams } from "./templateParams";
 import type { BlockArgs } from "./types";
 
@@ -15,11 +29,20 @@ export type * from "@platforma-open/milaboratories.vj-usage.kind";
 /** A usage needs both genes on a chain; either alone gives no V/J pair. */
 const GENES = ["VGene", "JGene"];
 
+const USAGE_COLUMN_NAMES = new Set([
+  "pl7.app/vdj/vjGeneUsage",
+  "pl7.app/vdj/vGeneUsage",
+  "pl7.app/vdj/jGeneUsage",
+]);
+
 export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind })
   .args<BlockArgs>((data) => {
     if (data.datasetRef === undefined) throw new Error("Dataset is required");
     return {
       datasetRef: data.datasetRef,
+      ...(data.filterRef !== undefined && {
+        inputFilter: createGlobalPObjectId(data.filterRef.blockId, data.filterRef.name),
+      }),
       scChain: data.scChain,
       allele: data.allele,
       customBlockLabel: data.customBlockLabel,
@@ -30,17 +53,23 @@ export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind }
 
   // MiXCR datasets always carry V and J gene columns; an imported (bare) set carries them only
   // when the file mapped them, so one without a V and J on some chain is not offered at all.
-  .output("datasetOptions", (ctx) =>
-    ctx.resultPool
-      .getOptions((spec) => isPColumnSpec(spec) && isDatasetSpec(spec), {
-        // suppress native label of the column (e.g. "Number of Reads") to show only the dataset label
-        label: { includeNativeLabel: false },
-      })
-      .filter(
-        (option) =>
-          !isBareSetAxis(ctx.resultPool.getPColumnSpecByRef(option.ref)?.axesSpec[1]) ||
-          (chainsWithGenes(ctx.resultPool, option.ref, GENES)?.length ?? 0) > 0,
-      ),
+  // Each dataset carries its subset columns (e.g. Repertoire Labeling labels) as filters.
+  .output("datasetOptions", (ctx): DatasetOption[] =>
+    (
+      buildDatasetOptions(ctx, {
+        primary: (spec) => isPColumnSpec(spec) && isDatasetSpec(spec),
+        // Only subsets keyed by the clonotype axis alone: usage counts clonotypes.
+        filter: (spec) =>
+          isPColumnSpec(spec) &&
+          spec.axesSpec.length === 1 &&
+          isReceptorRecordAxis(spec.axesSpec[0]),
+        requireEnrichments: false,
+      }) ?? []
+    ).filter(
+      ({ primary }) =>
+        !isBareSetAxis(ctx.resultPool.getPColumnSpecByRef(primary.ref)?.axesSpec[1]) ||
+        (chainsWithGenes(ctx.resultPool, primary.ref, GENES)?.length ?? 0) > 0,
+    ),
   )
 
   .output("datasetSpec", (ctx) => {
@@ -74,7 +103,17 @@ export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind }
       return undefined;
     }
 
-    return createPFrameForGraphs(ctx, pCols);
+    if (pCols.some((c) => c.data === undefined)) return undefined;
+    // Usage columns of other instances of this block (e.g. a full run next to a subset run)
+    // share names with ours and could take over the plots, so only ours are kept.
+    const related = getRelatedColumns(ctx, {
+      columns: pCols,
+      predicate: (spec) =>
+        !isHiddenFromUIColumn(spec) &&
+        !isHiddenFromGraphColumn(spec) &&
+        !USAGE_COLUMN_NAMES.has(spec.name),
+    });
+    return ctx.createPFrame([...pCols, ...related]);
   })
 
   .output("isRunning", (ctx) => ctx.outputs?.getIsReadyOrError() === false)

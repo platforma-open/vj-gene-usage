@@ -15,6 +15,7 @@ import type { BlockData } from "./types";
 export function deriveTemplateParams(data: BlockData): BlockParams {
   return {
     datasetRef: data.datasetRef,
+    filterRef: data.filterRef,
     scChain: data.scChain,
     allele: data.allele,
     weightedFlag: data.weightedFlag,
