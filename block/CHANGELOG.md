@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.5.1
+
+### Patch Changes
+
+- 299de3d: Release every package through npm trusted publishing (OIDC) so each package's trusted publisher is used before it expires.
+
 ## 2.5.0
 
 ### Minor Changes
