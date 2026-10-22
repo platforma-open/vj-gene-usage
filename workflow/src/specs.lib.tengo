@@ -1,4 +1,3 @@
-ll := import("@platforma-sdk/workflow-tengo:ll")
 
 
 sampleAxisSpec := func(abundanceSpec) {

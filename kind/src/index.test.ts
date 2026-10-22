@@ -10,6 +10,7 @@ describe("the envelope", () => {
   it("accepts an empty object — a fresh block has nothing configured", () => {
     expect(parse({})).toEqual({
       datasetRef: undefined,
+      filterRef: undefined,
       scChain: undefined,
       allele: undefined,
       weightedFlag: undefined,
@@ -33,12 +34,19 @@ describe("the envelope", () => {
   it("round-trips a fully configured block", () => {
     const params = {
       datasetRef: DATASET_REF,
+      filterRef: { __isRef: true as const, blockId: "b2", name: "labels.igg" },
       scChain: "B" as const,
       allele: true,
       weightedFlag: false,
       customBlockLabel: "Beta chain, alleles",
     };
     expect(parse(params)).toEqual(params);
+  });
+});
+
+describe("filterRef", () => {
+  it("rejects a bare string", () => {
+    expect(() => parse({ filterRef: "labels.igg" })).toThrow("'filterRef' must be a reference");
   });
 });
 

@@ -1,7 +1,6 @@
 pt := import("@platforma-sdk/workflow-tengo:pt")
 xsv := import("@platforma-sdk/workflow-tengo:pframes.xsv")
 pframes := import("@platforma-sdk/workflow-tengo:pframes")
-ll := import("@platforma-sdk/workflow-tengo:ll")
 specs := import(":specs")
 
 calculateUsage := func(vGeneSpec, jGeneSpec, abundanceSpec, tsv) {
