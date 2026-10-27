@@ -13,6 +13,8 @@ export type * from "@platforma-open/milaboratories.vj-usage.kind";
  */
 export type BlockData = {
   datasetRef?: PlRef;
+  /** Subset column picked with the dataset in PlDatasetSelector (e.g. a Repertoire Labeling label). */
+  filterRef?: PlRef;
   scChain?: ScChain;
   allele?: boolean;
   defaultBlockLabel: string;
@@ -30,6 +32,7 @@ export type BlockData = {
  */
 export type BlockArgs = {
   datasetRef: PlRef;
+  inputFilter?: string;
   scChain?: ScChain;
   allele?: boolean;
   customBlockLabel: string;
