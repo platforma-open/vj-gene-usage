@@ -1,5 +1,7 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.6.2
+
 ## 2.6.1
 
 ### Patch Changes

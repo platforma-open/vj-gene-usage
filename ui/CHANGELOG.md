@@ -1,5 +1,12 @@
 # @platforma-open/milaboratories.vj-usage.ui
 
+## 2.6.2
+
+### Patch Changes
+
+- aa61df6: Keep the block subtitle in sync with the chosen input's current label
+  - @platforma-open/milaboratories.vj-usage.model@2.6.2
+
 ## 2.6.1
 
 ### Patch Changes
