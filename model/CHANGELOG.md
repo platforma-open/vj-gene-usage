@@ -1,5 +1,16 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.6.1
+
+### Patch Changes
+
+- aa420bf: Compute the block subtitle without opening the block
+
+  The subtitle shows the dataset's label, written when the user picks a dataset, followed
+  by "Allele" or "Gene", computed from the block's settings. It no longer depends on opening
+  the block, and opening the block no longer rewrites it. Existing blocks show "Allele" or
+  "Gene" alone until the dataset is picked again.
+
 ## 2.6.0
 
 ### Minor Changes

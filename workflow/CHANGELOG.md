@@ -1,5 +1,7 @@
 # @platforma-open/milaboratories.vj-usage.workflow
 
+## 2.6.1
+
 ## 2.6.0
 
 ### Minor Changes
