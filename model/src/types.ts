@@ -8,7 +8,7 @@ export type * from "@platforma-open/milaboratories.vj-usage.kind";
 
 /**
  * Unified V3 data — the UI's persisted state. The three plot states,
- * `weightedFlag`, and `defaultBlockLabel` are display-only; the args lambda
+ * `weightedFlag`, and `subtitleLabel` are display-only; the args lambda
  * projects only the analysis inputs (+ `customBlockLabel` for the trace).
  */
 export type BlockData = {
@@ -17,16 +17,25 @@ export type BlockData = {
   filterRef?: PlRef;
   scChain?: ScChain;
   allele?: boolean;
-  defaultBlockLabel: string;
   customBlockLabel: string;
+  /**
+   * The dataset's (or subset's) label as the result pool shows it. Written by the dataset
+   * picker on a user pick; feeds the subtitle only, never the workflow.
+   */
+  subtitleLabel?: string;
   weightedFlag: boolean;
   vUsagePlotState: GraphMakerState;
   jUsagePlotState: GraphMakerState;
   vjUsagePlotState: GraphMakerState;
 };
 
+/** Data as stored before `subtitleLabel` replaced the UI-computed `defaultBlockLabel`. */
+export type BlockDataV1 = Omit<BlockData, "subtitleLabel"> & {
+  defaultBlockLabel: string;
+};
+
 /**
- * Workflow-facing args. `defaultBlockLabel` and the plot/view state are not
+ * Workflow-facing args. `subtitleLabel` and the plot/view state are not
  * projected; `customBlockLabel` is — the workflow uses it as the trace label.
  * `datasetRef` is required: the args lambda throws when absent.
  */
