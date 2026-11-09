@@ -17,12 +17,13 @@ import {
   isPairedDataset,
   isReceptorRecordAxis,
 } from "./dataset";
+import { defaultSubtitle } from "./label";
 import { deriveTemplateParams } from "./templateParams";
 import type { BlockArgs } from "./types";
 
 export { blockDataModel, initBlockData } from "./dataModel";
 export { deriveTemplateParams } from "./templateParams";
-export { getDefaultBlockLabel } from "./label";
+export { defaultSubtitle } from "./label";
 export type { BlockArgs, BlockData } from "./types";
 export type * from "@platforma-open/milaboratories.vj-usage.kind";
 
@@ -120,7 +121,7 @@ export const platforma = BlockModelV3.create({ dataModel: blockDataModel, kind }
 
   .title(() => "V/J Usage")
 
-  .subtitle((ctx) => ctx.data.customBlockLabel || ctx.data.defaultBlockLabel)
+  .subtitle((ctx) => ctx.data.customBlockLabel || defaultSubtitle(ctx.data))
 
   .sections(() => [
     { type: "link" as const, href: "/" as const, label: "V Gene Usage" },

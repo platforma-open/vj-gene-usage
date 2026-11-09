@@ -1,8 +1,7 @@
 import type { GraphMakerState } from "@milaboratories/graph-maker";
 import { DataModelBuilder } from "@platforma-sdk/model";
 import { kind } from "@platforma-open/milaboratories.vj-usage.kind";
-import { getDefaultBlockLabel } from "./label";
-import type { BlockData, BlockParams, LegacyBlockArgs, LegacyUiState } from "./types";
+import type { BlockData, BlockDataV1, BlockParams, LegacyBlockArgs, LegacyUiState } from "./types";
 
 const usagePlot = (title: string, currentTab: GraphMakerState["currentTab"]): GraphMakerState => ({
   title,
@@ -26,11 +25,10 @@ export const initBlockData = (params?: BlockParams): BlockData => {
     filterRef: params?.filterRef,
     scChain: params?.scChain ?? "A",
     allele,
-    // The dataset's and the chain's human labels come from the result pool, which `init`
-    // cannot reach, so only the part computable from the params is filled in here. The
-    // watchEffect in ui/src/app.ts replaces it with the full label once the pool resolves.
-    defaultBlockLabel: getDefaultBlockLabel({ allele, isSingleCell: false }),
     customBlockLabel: params?.customBlockLabel ?? "",
+    // The dataset's label comes from the result pool, which `init` cannot reach; the subtitle
+    // shows the settings part until the user picks a dataset.
+    subtitleLabel: "",
     weightedFlag: params?.weightedFlag ?? true,
     vUsagePlotState: usagePlot("V Usage", "settings"),
     jUsagePlotState: usagePlot("J Usage", null),
@@ -39,7 +37,7 @@ export const initBlockData = (params?: BlockParams): BlockData => {
 };
 
 export const blockDataModel = new DataModelBuilder({ kind })
-  .from<BlockData>("v1")
+  .from<BlockDataV1>("v1")
   // V1 split analysis params + block labels across `args`; the three plot states
   // and `weightedFlag` lived under `uiState`. Fold both into unified `data`.
   .upgradeLegacy<LegacyBlockArgs, LegacyUiState>(({ args, uiState }) => {
@@ -48,8 +46,7 @@ export const blockDataModel = new DataModelBuilder({ kind })
       datasetRef: args?.datasetRef,
       scChain: args?.scChain ?? "A",
       allele,
-      defaultBlockLabel:
-        args?.defaultBlockLabel ?? getDefaultBlockLabel({ allele, isSingleCell: false }),
+      defaultBlockLabel: args?.defaultBlockLabel ?? "",
       customBlockLabel: args?.customBlockLabel ?? "",
       weightedFlag: uiState?.weightedFlag ?? true,
       vUsagePlotState: uiState?.vUsagePlotState ?? usagePlot("V Usage", "settings"),
@@ -57,4 +54,10 @@ export const blockDataModel = new DataModelBuilder({ kind })
       vjUsagePlotState: uiState?.vjUsagePlotState ?? usagePlot("V/J Usage", null),
     };
   })
+  // The old label mixed the dataset's result-pool label with settings; the settings part is
+  // recomputed from data, and the dataset part returns on the next dataset pick.
+  .migrate<BlockData>("v2", ({ defaultBlockLabel: _, ...rest }) => ({
+    ...rest,
+    subtitleLabel: "",
+  }))
   .init(({ params }) => initBlockData(params));
