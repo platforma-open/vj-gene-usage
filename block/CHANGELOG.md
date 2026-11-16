@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.vj-usage
 
+## 2.6.3
+
+### Patch Changes
+
+- 4ce7e60: Bump the kind version. A comment in the kind source changed without a version bump. The registry keeps a published kind version immutable by source hash, so republishing 1.1.0 with different content failed and blocked the block release.
+
 ## 2.6.2
 
 ## 2.6.1

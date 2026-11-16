@@ -1,5 +1,12 @@
 # @platforma-open/milaboratories.vj-usage.model
 
+## 2.6.3
+
+### Patch Changes
+
+- Updated dependencies [4ce7e60]
+  - @platforma-open/milaboratories.vj-usage.kind@1.1.1
+
 ## 2.6.2
 
 ## 2.6.1
